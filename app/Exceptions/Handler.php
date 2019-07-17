@@ -46,6 +46,9 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($request->is("api/*")) {
+            return $this->invalidJson($request, $exception);
+        }
         return parent::render($request, $exception);
     }
 }

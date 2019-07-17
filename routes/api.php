@@ -16,3 +16,8 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+Route::group(['prefix' => 'entry', 'as' => "七牛云上传", 'namespace' => "Entry"], function () {
+    Route::post('application/upload', 'EntryController@QiNiuUploadExample');
+});
