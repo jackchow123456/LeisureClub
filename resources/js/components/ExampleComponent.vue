@@ -27,10 +27,10 @@
         mounted() {
             let that = this;
             // 12. 创建 Echo 监听
-            Echo.channel('laravel_database_rss')
-                .listen('RssCreatedEvent', (e) => {
-                    that.names.push(e.name)
-                });
+            // Echo.channel('laravel_database_rss')
+            //     .listen('RssCreatedEvent', (e) => {
+            //         that.names.push(e.name)
+            //     });
         }
     }
 </script>

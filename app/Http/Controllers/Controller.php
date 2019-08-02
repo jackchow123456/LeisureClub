@@ -136,7 +136,7 @@ class Controller extends BaseController
      */
     public function success($data, $status = "success")
     {
-        if ($data['success'] === false) {
+        if (isset($data['success']) && $data['success'] === false) {
             return $this->returnMsg($data);
         }
         return $this->status($status, compact('data'));

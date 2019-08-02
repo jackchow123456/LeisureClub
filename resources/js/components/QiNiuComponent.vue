@@ -35,11 +35,11 @@
                 server.QiNiuUpload(formData).then(function (response) {
                     var $data = response.data
                     if ($data.code == 200) {
-                        that.url = $data.data[0].base_url + $data.data[0].key;
+                        that.url = $data.data.base_url + $data.data.key;
                         that.success = '上传成功！';
                     }
                 }).catch(function (error) {
-                    that.error = '上传失败,图片不符合上传规格,(不能超过2M)';
+                    that.error = '上传失败,图片不符合上传规格,(不能超过2M)'+error;
                 });
             },
 
