@@ -4,9 +4,12 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap');
+// require('./bootstrap');
 
 window.Vue = require('vue');
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+import router from './router'
 
 /**
  * The following block of code may be used to automatically register your
@@ -16,11 +19,13 @@ window.Vue = require('vue');
  * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
  */
 
+Vue.use(ElementUI);
+
 // const files = require.context('./', true, /\.vue$/i);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-
+Vue.component('navbar-component', require('./components/NavbarComponent.vue').default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -28,5 +33,6 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
  */
 
 const app = new Vue({
+    router,
     el: '#app',
 });

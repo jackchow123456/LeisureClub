@@ -54,7 +54,7 @@ return [
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => '',
+            'prefix' => 'le_',
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
@@ -131,6 +131,7 @@ return [
             'password' => env('REDIS_PASSWORD', null),
             'port' => env('REDIS_PORT', 6379),
             'database' => env('REDIS_DB', 0),
+            'read_write_timeout' => 0,
         ],
 
         'cache' => [

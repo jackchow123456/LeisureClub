@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Facades\Sms\SmsRepository;
 use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
@@ -43,30 +46,89 @@ class RegisterController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
+     * @param  array $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
         ]);
     }
 
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
+     * @param  array $data
      * @return \App\User
      */
     protected function create(array $data)
     {
         return User::create([
             'name' => $data['name'],
-            'email' => $data['email'],
+            'mobile' => $data['mobile'],
+            'email' => '',
             'password' => Hash::make($data['password']),
         ]);
+    }
+
+    /**
+     * 注册
+     *
+     * @param Request $request
+     * @return mixed
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function register(Request $request)
+    {
+        $this->validate($request, [
+            'step' => 'required|in:1,2',
+            'mobile' => 'required',
+            'scenes' => 'required|in:register',
+        ]);
+
+        $step = $request->input('step');
+        $mobile = $request->input('mobile');
+        $scenes = $request->input('scenes');
+
+        if ($step == 1) {
+
+            $this->validate($request, [
+                'code' => 'required',
+            ]);
+
+            $code = $request->input('code');
+
+
+            $result = SmsRepository::checkMobileSms($mobile, $code, $scenes);
+
+            if ($result) {
+                return $this->success(['message' => 'ok']);
+            }
+
+            return $this->failed('验证码填写错误');
+        }
+
+        if ($step == 2) {
+
+            if (!SmsRepository::isChecked($mobile, $scenes)) {
+                return $this->failed('你验证码认证还没通过呢');
+            }
+
+            $this->validator($request->all())->validate();
+
+            event(new Registered($user = $this->create($request->all())));
+
+            $token = $this->guard()->login($user);
+
+            return $this->success([
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'user' => auth()->user(),
+                'expires_in' => auth()->factory()->getTTL() * 60
+            ]);
+        }
+
     }
 }

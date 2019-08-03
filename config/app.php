@@ -161,7 +161,8 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-
+        Toplan\PhpSms\PhpSmsServiceProvider::class,
+        Toplan\Sms\SmsManagerServiceProvider::class,
         /*
          * Package Service Providers...
          */
@@ -171,9 +172,10 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
+        App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\SmsServiceProvider::class,
 
     ],
 
@@ -226,7 +228,10 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        'PhpSms' => Toplan\PhpSms\Facades\Sms::class,
+        'SmsManager' => Toplan\Sms\Facades\SmsManager::class,
 
+        'Sms\SmsRepository' => App\Facades\Sms\SmsRepository::class,
     ],
 
 ];
