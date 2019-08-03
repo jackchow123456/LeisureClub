@@ -16,9 +16,11 @@
         "qiniu/php-sdk": "^7.2",
         "swooletw/laravel-swoole": "^2.5",
         "textalk/websocket": "^1.2",
+        "toplan/laravel-sms": "~2.6",
         "tymon/jwt-auth": "^1.0"
     },
     "require-dev": {
+        "barryvdh/laravel-ide-helper": "^2.6",
         "beyondcode/laravel-dump-server": "^1.0",
         "filp/whoops": "^2.0",
         "fzaninotto/faker": "^1.4",
@@ -43,6 +45,9 @@
         "classmap": [
             "database/seeds",
             "database/factories"
+        ],
+        "files":[
+            "app/Helpers/functions.php"
         ]
     },
     "autoload-dev": {

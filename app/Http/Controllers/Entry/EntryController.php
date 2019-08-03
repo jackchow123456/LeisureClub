@@ -80,6 +80,16 @@ class EntryController extends Controller
         ProcessPodcast::dispatch();
     }
 
+    public function getVoteResult()
+    {
+        $list['vote_1'] = Redis::connection('default')->smembers('vote_1');
+        $list['vote_2'] = Redis::connection('default')->smembers('vote_2');
+        $count['vote_1'] = Redis::connection('default')->scard('vote_1');
+        $count['vote_2'] = Redis::connection('default')->scard('vote_2');
+
+        return $this->success(['list' => $list, 'count' => $count]);
+    }
+
     /**
      * 投票
      *
@@ -88,8 +98,17 @@ class EntryController extends Controller
      */
     public function vote(Request $request)
     {
+        $user = $request->user();
+
         $id = $request->input('id');
-        $num = Redis::incr('vote_' . $id);
+
+        if(Redis::connection('default')->sismember('vote_'.$id,$user->id)){
+            return $this->failed('你已经投票过了');
+        }
+
+        Redis::connection('default')->sadd('vote_'.$id,$user->id);
+        $num = Redis::connection('default')->scard('vote_'.$id);
+
         $data = json_encode(['id' => $id, 'num' => $num]);
         $data = str_replace("\"", "\\\"" , $data);
         Redis::connection('default')->publish("abc", '["vote","' . $data . '"]');

@@ -9,7 +9,7 @@ Vue.use(VueRouter)
 const routes = [
     { path: '/', component: Home},
     { path: '/qiniu', component: QiNiu},
-    { path: '/vote', component: Vote},
+    { path: '/vote', component: Vote}
 ]
 
 // eslint-disable-next-line no-new
