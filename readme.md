@@ -4,7 +4,7 @@
 
 2.`php artisan migrate --seed` 填充数据
 
-3.`php artisan swoole:http stsrt` 开启swoole-http服务
+3.`php artisan swoole:http start` 开启swoole-http服务
 
 
 ## 项目架构介绍
