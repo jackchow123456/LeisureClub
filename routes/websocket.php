@@ -25,6 +25,6 @@ Websocket::on('example', function ($websocket, $data) {
 
 Websocket::on('vote', function ($websocket, $data) {
     // called while socket on connect
-    $data = str_replace("\"", "" , $data);
+    $data = str_replace("\"", "\\\"" , $data);
     $websocket->broadcast()->emit('vote', $data);
 });

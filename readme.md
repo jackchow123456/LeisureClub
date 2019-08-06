@@ -4,7 +4,9 @@
 
 2.`php artisan migrate --seed` 填充数据
 
-3.`php artisan swoole:http start` 开启swoole-http服务
+3.`php artisan swoole:http start` 开启swoole-http服务 (实时投票功能用到)
+
+4.`php artisan redis:subscribe`  开启订阅服务 (实时投票功能用到)
 
 
 ## 项目架构介绍
