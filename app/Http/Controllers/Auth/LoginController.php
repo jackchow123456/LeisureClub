@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Facades\Auth\AuthRepository;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -87,6 +88,10 @@ class LoginController extends Controller
         $mobile = $request->input('mobile');
         $scenes = $request->input('scenes');
 
+        if (!AuthRepository::checkMobile($mobile)) {
+            return $this->failed('该手机号码已注册.');
+        }
+
         $result = SmsManager::validateSendable();
         if (!$result['success']) {
             return $this->failed($result['message']);
@@ -142,13 +147,12 @@ class LoginController extends Controller
 
         $result = checkMobileSms($mobile, $code, $scenes);
 
-        if($result){
+        if ($result) {
             return $this->success([]);
         }
 
         return $this->failed('error');
     }
-
 
 
 }

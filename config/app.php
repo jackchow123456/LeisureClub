@@ -67,7 +67,8 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Shanghai',
+//    'timezone' => 'UTC',
 
     /*
     |--------------------------------------------------------------------------
@@ -232,6 +233,7 @@ return [
         'SmsManager' => Toplan\Sms\Facades\SmsManager::class,
 
         'Sms\SmsRepository' => App\Facades\Sms\SmsRepository::class,
+        'Auth\AuthRepository' => App\Facades\Auth\AuthRepository::class,
     ],
 
 ];

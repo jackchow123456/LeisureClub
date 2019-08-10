@@ -3,7 +3,7 @@
 
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.8.30 on 2019-08-03 13:20:24.
+ * Generated for Laravel 5.8.30 on 2019-08-10 08:09:56.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -15330,6 +15330,44 @@ namespace App\Facades\Sms {
  
 }
 
+namespace App\Facades\Auth { 
+
+    /**
+     * 
+     *
+     */ 
+    class AuthRepository {
+        
+        /**
+         * 确保手机号是唯一的
+         *
+         * @param $mobile
+         * @return bool 
+         * @static 
+         */ 
+        public static function checkMobile($mobile)
+        {
+                        /** @var \App\Repository\Auth\AuthRepository $instance */
+                        return $instance->checkMobile($mobile);
+        }
+        
+        /**
+         * 确保用户名是唯一的
+         *
+         * @param $name
+         * @return bool 
+         * @static 
+         */ 
+        public static function checkUserName($name)
+        {
+                        /** @var \App\Repository\Auth\AuthRepository $instance */
+                        return $instance->checkUserName($name);
+        }
+         
+    }
+ 
+}
+
 namespace Maatwebsite\Excel\Facades { 
 
     /**
@@ -19463,6 +19501,12 @@ namespace  {
 namespace Sms { 
 
     class SmsRepository extends \App\Facades\Sms\SmsRepository {}
+ 
+}
+
+namespace Auth { 
+
+    class AuthRepository extends \App\Facades\Auth\AuthRepository {}
  
 }
 

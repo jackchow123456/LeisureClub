@@ -23,7 +23,7 @@ class UsersTableSeeder extends Seeder
             ],
             [
                 'name' => 'hurry',
-                'email' => '775893056@qq.com',
+                'email' => '1041224389@qq.com',
                 'password' => $hasher->make('123456'),
                 'mobile' => '15015587481',
             ],

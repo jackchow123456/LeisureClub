@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 
 class Handler extends ExceptionHandler
 {
@@ -56,6 +57,10 @@ class Handler extends ExceptionHandler
 
             if ($exception instanceof ValidationException) {
                 return (new Controller())->failed($exception->validator->errors()->first());
+            }
+
+            if ($exception->getPrevious() instanceof TokenExpiredException) {
+                return (new Controller())->failed('登录超时，请重新登录', 401);
             }
 
             return (new Controller())->failed($exception->getMessage());
