@@ -1,3 +1,4 @@
+
 [submodule "LeisureClubVue"]
 	path = LeisureClubVue
-	url = git@github.com:jackchow123456/LeisureClubVue.git
+	url = https://github.com/jackchow123456/LeisureClubVue.git
