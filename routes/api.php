@@ -29,3 +29,5 @@ Route::group(['prefix' => 'entry', 'as' => "七牛云上传", 'namespace' => "En
     Route::post('application/vote', 'EntryController@vote');
     Route::get('application/vote', 'EntryController@getVoteResult');
 });
+
+Route::get('post', 'Post\PostController@index');
