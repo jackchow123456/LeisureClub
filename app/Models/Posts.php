@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Posts extends Model
 {
+    // 我是测试代码1
     public function user()
     {
         return $this->hasMany(User::class, 'id', 'user_id');
