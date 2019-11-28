@@ -6,7 +6,7 @@
         this.warp = $(warp);
         this.attrs = {};
         this.commonStock = 0; // 统一库存
-        this.commonPrice = 0; // 统一价格
+        this.commonPrice = 0; // 统一价格1
         this.init();
     }
 
