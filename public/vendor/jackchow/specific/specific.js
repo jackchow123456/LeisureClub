@@ -145,6 +145,7 @@
         $(document).on('click', _this.class + ' .add', function () {
             var html = _this.buildValueHtml();
             $(this).parents('.input-group').before(html);
+            stopPropagation();
         });
 
         $(document).on('click', _this.class + ' .remove', function () {
