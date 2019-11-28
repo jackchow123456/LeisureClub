@@ -107,7 +107,7 @@
                         }
                     });
                 } else {
-
+                    $(e.delegateTarget).addLoading();
                 }
             }
 
@@ -132,13 +132,19 @@
             var html = _this.buildSpecificBoxHtml();
             $(this).before(html);
             _this.bindSelect2();
+            $('.specific_warp').find('.box').boxWidget({
+                animationSpeed: 500,
+
+                collapseIcon: 'fa-minus',
+                expandIcon: 'fa-plus',
+                removeIcon: 'fa-times'
+            })
         });
 
 
         $(document).on('click', _this.class + ' .add', function () {
             var html = _this.buildValueHtml();
             $(this).parents('.input-group').before(html);
-            _this.bindSelect2();
         });
 
         $(document).on('click', _this.class + ' .remove', function () {
@@ -203,7 +209,7 @@
     window.JackChowSpecific = Specific;
 
     jQuery.fn.addLoading = function () {
-        $(this).after('<div class="loading">\n' +
+        $(this).parents('box').children('box-body').after('<div class="loading">\n' +
             '            <div class="spinner">\n' +
             '                <div class="rect1"></div>\n' +
             '                <div class="rect2"></div>\n' +
