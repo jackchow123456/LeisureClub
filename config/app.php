@@ -67,7 +67,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Shanghai',
 
     /*
     |--------------------------------------------------------------------------
@@ -80,7 +80,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'zh-CN',
 
     /*
     |--------------------------------------------------------------------------
@@ -177,6 +177,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\SmsServiceProvider::class,
 
+        JackChow\SpecificServerProvider::class,
     ],
 
     /*
@@ -231,6 +232,8 @@ return [
         'SmsManager' => Toplan\Sms\Facades\SmsManager::class,
 
         'Sms\SmsRepository' => App\Facades\Sms\SmsRepository::class,
+
+
     ],
 
 ];

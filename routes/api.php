@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Routing\Router;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,3 +32,14 @@ Route::group(['prefix' => 'entry', 'as' => "七牛云上传", 'namespace' => "En
 });
 
 Route::get('post', 'Post\PostController@index');
+
+// Api 路由
+
+Route::group([
+    'prefix' => 'admin/'.config('store.prefix', 'store'),
+    'namespace' => '\App\Admin\Controllers\Api\Store',
+], function (Router $router) {
+    // 商品管理
+    Route::get('/goods/getGoodsAttr', 'GoodsController@getGoodsAttr')->name('store.goods.getGoodsAttr');
+    Route::post('/goods/createGoodsAttr', 'GoodsController@createGoodsAttr')->name('store.goods.createGoodsAttr');
+});
