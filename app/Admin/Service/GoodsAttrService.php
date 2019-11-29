@@ -14,7 +14,7 @@ class GoodsAttrService
 {
     public function getListByName($name)
     {
-        return GoodsAttr::when($name, function ($j) use ($name) {
+        return GoodsAttr::with('values')->when($name, function ($j) use ($name) {
             $j->where('name', 'LIKE', "{$name}%");
         })->paginate();
     }

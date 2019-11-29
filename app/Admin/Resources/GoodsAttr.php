@@ -17,6 +17,7 @@ class GoodsAttr extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'values' => GoodsAttrValue::collection($this->whenLoaded('values')),
         ];
     }
 }

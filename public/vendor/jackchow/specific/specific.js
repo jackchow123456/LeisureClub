@@ -49,7 +49,7 @@
                     var selected = $.map(_this.warp.find('select.select2'), function (d) {
                         return $(d).val();
                     });
-                    console.log(selected);
+
                     return {
                         results: $.map(data.data, function (d) {
                             d.id = d.id;
@@ -141,11 +141,12 @@
             })
         });
 
-
-        $(document).on('click', _this.class + ' .add', function () {
-            var html = _this.buildValueHtml();
-            $(this).parents('.input-group').before(html);
-            stopPropagation();
+        $(document).on('click', _this.class + ' .add', function (event) {
+            if(!event.isPropagationStopped()){
+                var html = _this.buildValueHtml();
+                $(this).parents('.input-group').before(html);
+            }
+            event.stopPropagation();
         });
 
         $(document).on('click', _this.class + ' .remove', function () {
@@ -210,7 +211,7 @@
     window.JackChowSpecific = Specific;
 
     jQuery.fn.addLoading = function () {
-        $(this).parents('box').children('box-body').after('<div class="loading">\n' +
+        $(this).parents('.box').children('.box-body').after('<div class="loading">\n' +
             '            <div class="spinner">\n' +
             '                <div class="rect1"></div>\n' +
             '                <div class="rect2"></div>\n' +
