@@ -59,12 +59,18 @@
                 &nbsp;添加商品规格
             </button>
 
+            <div class="specific_detail">
+                <div style="height: 20px; border-bottom: 1px solid #eee; text-align: center;margin-top: 20px;margin-bottom: 20px;">
+                  <span style="font-size: 18px; background-color: #ffffff; padding: 0 10px;">
+                    规格详情
+                  </span>
+                </div>
+            </div>
 
             {{--<span class="help-block">--}}
             {{--<i class="fa fa-info-circle"></i>&nbsp;如果选择输入的新规格可以自动新建.--}}
             {{--</span>--}}
         </div>
-
 
 
         @include('admin::form.help-block')

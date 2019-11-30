@@ -107,7 +107,17 @@
                         }
                     });
                 } else {
+                    if (!e.isPropagationStopped()) {
+                        if (data.values.length > 0) {
+                            for (item in data.values) {
+                                var html = _this.buildValueHtmlWithItem(data.values[item]);
+                                $(e.delegateTarget).parents('.box:first').find('.box-body:last').prepend(html);
+
+                            }
+                        }
+                    }
                     // $(e.delegateTarget).addLoading();
+
                 }
             }
 
@@ -151,6 +161,10 @@
                 $(this).parents('.input-group').before(html);
             }
             event.stopPropagation();
+        });
+
+        $(document).on('blur', '.specific_value input', function () {
+            console.log($(this).val());
         });
 
         $(document).on('click', _this.class + ' .remove', function () {
@@ -203,6 +217,21 @@
             '                        </div>\n' +
             '                        <!-- /btn-group -->\n' +
             '                        <input class="form-control" type="text" value="">\n' +
+            '\n' +
+            '                        <div class="input-group-btn">\n' +
+            '                            <button type="button" class="btn btn-danger remove"><i class="fa fa-times"></i></button>\n' +
+            '                        </div>\n' +
+            '                    </div>';
+        return html;
+    };
+
+    Specific.prototype.buildValueHtmlWithItem = function (item) {
+        var html = '<div class="input-group col-sm-3 specific_value">\n' +
+            '                        <div class="input-group-btn">\n' +
+            '                            <button type="button" class="btn btn-info" style="color: #FFFFFF"> 规格值</button>\n' +
+            '                        </div>\n' +
+            '                        <!-- /btn-group -->\n' +
+            '                        <input class="form-control" type="text" value="' + item.name + '">\n' +
             '\n' +
             '                        <div class="input-group-btn">\n' +
             '                            <button type="button" class="btn btn-danger remove"><i class="fa fa-times"></i></button>\n' +
