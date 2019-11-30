@@ -107,7 +107,7 @@
                         }
                     });
                 } else {
-                    $(e.delegateTarget).addLoading();
+                    // $(e.delegateTarget).addLoading();
                 }
             }
 
@@ -142,7 +142,11 @@
         });
 
         $(document).on('click', _this.class + ' .add', function (event) {
-            if(!event.isPropagationStopped()){
+            if ($(this).parents('.box').find('select:last').val() == '') {
+                layer.msg('请先选择规格，再添加规格值.', {icon: 0});
+                return;
+            }
+            if (!event.isPropagationStopped()) {
                 var html = _this.buildValueHtml();
                 $(this).parents('.input-group').before(html);
             }
