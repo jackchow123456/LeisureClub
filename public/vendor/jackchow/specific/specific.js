@@ -168,6 +168,13 @@
             _this.getAttr();
         });
 
+        $(document).on('click', _this.class + ' .remove-box', function () {
+            $(this).parents('.box:first').slideUp(500, function () {
+                $(this).remove();
+                _this.getAttr();
+            });
+
+        });
 
         $(document).on('click', _this.class + ' .remove', function () {
             $(this).parents('.input-group').remove();
@@ -188,7 +195,7 @@
             '                    </div>\n' +
             '\n' +
             '                    <div class="box-tools pull-right">\n' +
-            '                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>\n' +
+            '                        <button type="button" class="btn btn-box-tool remove-box"><i class="fa fa-times"></i>\n' +
             '                        </button>\n' +
             '                    </div>\n' +
             '                    <!-- /.box-tools -->\n' +
@@ -244,8 +251,9 @@
     Specific.prototype.BuildForm = function (default_sku) {
         let _this = this;
         let attr_names = Object.keys(_this.attrs);
-        if (attr_names.length === 0) {
-
+        if (attr_names.length == 0) {
+            _this.warp.find('.specific_table tbody').html(' ');
+            _this.warp.find('.specific_table thead').html(' ');
         } else {
             // 渲染表头
             let thead_html = '<tr>';
