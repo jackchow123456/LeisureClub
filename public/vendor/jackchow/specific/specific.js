@@ -102,7 +102,6 @@
                                 time: 3000,
                                 icon: 2
                             }, function (index) {
-                                m
                                 layer.closeAll();
                             });
                         }
@@ -132,6 +131,7 @@
                         }
                     }
                 }
+                _this.getAttr();
             }
             e.stopPropagation();
         });
@@ -145,8 +145,7 @@
             $(this).before(html);
             _this.bindSelect2();
             $('.specific_warp').find('.box').boxWidget({
-                animationSpeed: 500,
-
+                animationSpeed: 250,
                 collapseIcon: 'fa-minus',
                 expandIcon: 'fa-plus',
                 removeIcon: 'fa-times'
@@ -167,13 +166,8 @@
 
         $(document).on('blur', '.specific_value input', function () {
             _this.getAttr();
-            console.log($(this).val());
         });
 
-        $(document).on('change', '.specific_value select', function () {
-            _this.getAttr();
-            console.log($(this).val());
-        });
 
         $(document).on('click', _this.class + ' .remove', function () {
             $(this).parents('.input-group').remove();
@@ -220,15 +214,15 @@
     Specific.prototype.getAttr = function () {
         let attr = {}; // 所有属性
         let _this = this;
-        let trs = _this.warp.find('.box');
-        console.log(trs)
+        let trs = _this.warp.find('.box.box-default.box-solid');
+
         trs.each(function () {
             let tr = $(this);
-            let attr_name = tr.find('.box-header select').val(); // 属性名
+            let attr_name = tr.find('.box-header .select2-selection__rendered').text(); // 属性名
             let attr_val = []; // 属性值
             if (attr_name) {
                 // 获取对应的属性值
-                tr.next('.box-body input').each(function () {
+                tr.children('.box-body').find('input').each(function () {
                     let ipt_val = $(this).val();
                     if (ipt_val) {
                         attr_val.push(ipt_val)
@@ -240,13 +234,106 @@
             }
         });
 
-        console.log(attr);
-
         if (JSON.stringify(_this.attrs) !== JSON.stringify(attr)) {
             _this.attrs = attr;
-            console.log(attr)
-            // _this.SKUForm()
+            _this.BuildForm()
         }
+    };
+
+    // 生成具体的SKU配置表单
+    Specific.prototype.BuildForm = function (default_sku) {
+        let _this = this;
+        let attr_names = Object.keys(_this.attrs);
+        if (attr_names.length === 0) {
+
+        } else {
+            // 渲染表头
+            let thead_html = '<tr>';
+            attr_names.forEach(function (attr_name) {
+                thead_html += '<th>' + attr_name + '</th>'
+            });
+            thead_html += '<th style="width: 100px">图片</th>';
+            thead_html += '<th style="width: 100px">价格 <input value="' + _this.commonPrice + '" type="text" style="width: 50px" class="Js_price"></th>';
+            thead_html += '<th style="width: 100px">库存 <input value="' + _this.commonStock + '" type="text" style="width: 50px" class="Js_stock"></th>';
+            thead_html += '</tr>';
+            _this.warp.find('.specific_table thead').html(thead_html);
+
+            // 求笛卡尔积
+            let cartesianProductOf = (function () {
+                return Array.prototype.reduce.call(arguments, function (a, b) {
+                    var ret = [];
+                    a.forEach(function (a) {
+                        b.forEach(function (b) {
+                            ret.push(a.concat([b]));
+                        });
+                    });
+                    return ret;
+                }, [[]]);
+            })(...Object.values(_this.attrs));
+
+            // 根据计算的笛卡尔积渲染tbody
+            let tbody_html = '';
+            cartesianProductOf.forEach(function (sku_item) {
+                tbody_html += '<tr>';
+                sku_item.forEach(function (attr_val, index) {
+                    let attr_name = attr_names[index];
+                    tbody_html += '<td data-field="' + attr_name + '">' + attr_val + '</td>';
+                });
+                tbody_html += '<td data-field="pic"><input value="" type="hidden" class="form-control"><span class="Js_sku_upload">+</span><span class="Js_sku_del_pic">清空</span></td>';
+                tbody_html += '<td data-field="price"><input value="' + _this.commonPrice + '" type="text" class="form-control"></td>';
+                tbody_html += '<td data-field="stock"><input value="' + _this.commonStock + '" type="text" class="form-control"></td>';
+                tbody_html += '</tr>'
+            });
+            _this.warp.find('.specific_table tbody').html(tbody_html);
+
+            if(default_sku) {
+                // 填充数据
+                default_sku.forEach(function(item_sku, index) {
+                    let tr = _this.warp.find('.specific_table tbody tr').eq(index);
+                    Object.keys(item_sku).forEach(function(field) {
+                        let input = tr.find('td[data-field="'+field+'"] input');
+                        if(input.length) {
+                            input.val(item_sku[field]);
+                            let sku_upload = tr.find('td[data-field="'+field+'"] .Js_sku_upload');
+                            if(sku_upload.length) {
+                                sku_upload.css('background-image','url('+item_sku[field]+')');
+                            }
+                        }
+                    })
+                });
+            }
+        }
+        $('.specific_detail').show();
+        // _this.processSku()
+    };
+
+    // 处理最终SKU数据，并写入input
+    Specific.prototype.processSku = function () {
+        let _this = this;
+        let sku_json = {};
+        sku_json.type = _this.warp.find('.sku_attr_select .btn.btn-success').attr('data-type');
+        if (sku_json.type === 'many') {
+            // 多规格
+            sku_json.attrs = _this.attrs;
+            let sku = [];
+            _this.warp.find('.sku_edit_warp tbody tr').each(function () {
+                let tr = $(this);
+                let item_sku = {};
+                tr.find('td[data-field]').each(function () {
+                    let td = $(this);
+                    let field = td.attr('data-field');
+                    let input = td.find('input');
+                    if (input.length) {
+                        item_sku[field] = input.val();
+                    } else {
+                        item_sku[field] = td.text();
+                    }
+                });
+                sku.push(item_sku);
+            });
+            sku_json.sku = sku;
+        }
+        _this.warp.find('.Js_sku_input').val(JSON.stringify(sku_json));
     };
 
     Specific.prototype.buildValueHtml = function () {
