@@ -49,7 +49,7 @@
                     var selected = $.map(_this.warp.find('select.select2'), function (d) {
                         return $(d).val();
                     });
-                    console.log(selected);
+
                     return {
                         results: $.map(data.data, function (d) {
                             d.id = d.id;
@@ -102,27 +102,39 @@
                                 time: 3000,
                                 icon: 2
                             }, function (index) {
+                                m
                                 layer.closeAll();
                             });
                         }
                     });
                 } else {
-                    $(e.delegateTarget).addLoading();
+                    if (!e.isPropagationStopped()) {
+                        var boxBody = $(e.delegateTarget).parents('.box:first').find('.box-body:last');
+                        var values = boxBody.children('.input-group');
+                        if (values.length > 1) {
+                            layer.confirm('你确定切换规格名吗？下面的规格值将会被全部替代的哦.', function (a, b, c) {
+                                boxBody.find('.input-group:last').prevAll('.input-group').remove();
+                                if (data.values.length > 0) {
+                                    for (item in data.values) {
+                                        var html = _this.buildValueHtmlWithItem(data.values[item]);
+                                        boxBody.prepend(html);
+                                    }
+                                }
+                                layer.close(a);
+                            })
+                        } else {
+                            if (data.values.length > 0) {
+                                for (item in data.values) {
+                                    var html = _this.buildValueHtmlWithItem(data.values[item]);
+                                    boxBody.prepend(html);
+                                }
+                            }
+                        }
+                    }
                 }
             }
-
             e.stopPropagation();
         });
-
-
-        // select2.on('select2:opening', function (e) {
-        //     $.map(_this.warp.find('select.select2'), function (d) {
-        //         let val = $(d).val();
-        //         console.log($(e.delegateTarget))
-        //         console.log($(e.delegateTarget).find("option[value='" + val + "']"))
-        //         $(e.delegateTarget).find("option[value='" + val + "']").prop('disabled', true);
-        //     });
-        // });
     };
 
     Specific.prototype.init = function () {
@@ -141,11 +153,26 @@
             })
         });
 
+        $(document).on('click', _this.class + ' .add', function (event) {
+            if ($(this).parents('.box').find('select:last').val() == '') {
+                layer.msg('请先选择规格，再添加规格值.', {icon: 0});
+                return;
+            }
+            if (!event.isPropagationStopped()) {
+                var html = _this.buildValueHtml();
+                $(this).parents('.input-group').before(html);
+            }
+            event.stopPropagation();
+        });
 
-        $(document).on('click', _this.class + ' .add', function () {
-            var html = _this.buildValueHtml();
-            $(this).parents('.input-group').before(html);
-            stopPropagation();
+        $(document).on('blur', '.specific_value input', function () {
+            _this.getAttr();
+            console.log($(this).val());
+        });
+
+        $(document).on('change', '.specific_value select', function () {
+            _this.getAttr();
+            console.log($(this).val());
         });
 
         $(document).on('click', _this.class + ' .remove', function () {
@@ -190,6 +217,37 @@
         return html;
     };
 
+    Specific.prototype.getAttr = function () {
+        let attr = {}; // 所有属性
+        let _this = this;
+        let trs = _this.warp.find('.box');
+        console.log(trs)
+        trs.each(function () {
+            let tr = $(this);
+            let attr_name = tr.find('.box-header select').val(); // 属性名
+            let attr_val = []; // 属性值
+            if (attr_name) {
+                // 获取对应的属性值
+                tr.next('.box-body input').each(function () {
+                    let ipt_val = $(this).val();
+                    if (ipt_val) {
+                        attr_val.push(ipt_val)
+                    }
+                });
+            }
+            if (attr_val.length) {
+                attr[attr_name] = attr_val;
+            }
+        });
+
+        console.log(attr);
+
+        if (JSON.stringify(_this.attrs) !== JSON.stringify(attr)) {
+            _this.attrs = attr;
+            console.log(attr)
+            // _this.SKUForm()
+        }
+    };
 
     Specific.prototype.buildValueHtml = function () {
         var html = '<div class="input-group col-sm-3 specific_value">\n' +
@@ -206,11 +264,26 @@
         return html;
     };
 
+    Specific.prototype.buildValueHtmlWithItem = function (item) {
+        var html = '<div class="input-group col-sm-3 specific_value">\n' +
+            '                        <div class="input-group-btn">\n' +
+            '                            <button type="button" class="btn btn-info" style="color: #FFFFFF"> 规格值</button>\n' +
+            '                        </div>\n' +
+            '                        <!-- /btn-group -->\n' +
+            '                        <input class="form-control" type="text" value="' + item.name + '">\n' +
+            '\n' +
+            '                        <div class="input-group-btn">\n' +
+            '                            <button type="button" class="btn btn-danger remove"><i class="fa fa-times"></i></button>\n' +
+            '                        </div>\n' +
+            '                    </div>';
+        return html;
+    };
+
 
     window.JackChowSpecific = Specific;
 
     jQuery.fn.addLoading = function () {
-        $(this).parents('box').children('box-body').after('<div class="loading">\n' +
+        $(this).parents('.box').children('.box-body').after('<div class="loading">\n' +
             '            <div class="spinner">\n' +
             '                <div class="rect1"></div>\n' +
             '                <div class="rect2"></div>\n' +

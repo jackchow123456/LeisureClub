@@ -12,12 +12,16 @@
     margin-right: 5px;
 }
 
+.specific_warp .box.box-solid.box-default>.box-header a, .box.box-solid.box-default>.box-header .btn.btn-primary:hover{
+    background-color: #367fa9;
+}
+
 .loading {
     width: 100%;
     height: 100%;
     position: absolute;
     top: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.3);
     z-index: 999;
 }
 

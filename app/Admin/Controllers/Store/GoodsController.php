@@ -67,6 +67,7 @@ class GoodsController extends AdminController
 
             $form->divider('价格库存');
 
+            $form->sku('sku', '商品规格1');
             $form->specific('sku1', '商品规格');
 
         });
