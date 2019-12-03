@@ -102,37 +102,39 @@
                                 time: 3000,
                                 icon: 2
                             }, function (index) {
+                                m
                                 layer.closeAll();
                             });
                         }
                     });
                 } else {
                     if (!e.isPropagationStopped()) {
-                        if (data.values.length > 0) {
-                            for (item in data.values) {
-                                var html = _this.buildValueHtmlWithItem(data.values[item]);
-                                $(e.delegateTarget).parents('.box:first').find('.box-body:last').prepend(html);
-
+                        var boxBody = $(e.delegateTarget).parents('.box:first').find('.box-body:last');
+                        var values = boxBody.children('.input-group');
+                        if (values.length > 1) {
+                            layer.confirm('你确定切换规格名吗？下面的规格值将会被全部替代的哦.', function (a, b, c) {
+                                boxBody.find('.input-group:last').prevAll('.input-group').remove();
+                                if (data.values.length > 0) {
+                                    for (item in data.values) {
+                                        var html = _this.buildValueHtmlWithItem(data.values[item]);
+                                        boxBody.prepend(html);
+                                    }
+                                }
+                                layer.close(a);
+                            })
+                        } else {
+                            if (data.values.length > 0) {
+                                for (item in data.values) {
+                                    var html = _this.buildValueHtmlWithItem(data.values[item]);
+                                    boxBody.prepend(html);
+                                }
                             }
                         }
                     }
-                    // $(e.delegateTarget).addLoading();
-
                 }
             }
-
             e.stopPropagation();
         });
-
-
-        // select2.on('select2:opening', function (e) {
-        //     $.map(_this.warp.find('select.select2'), function (d) {
-        //         let val = $(d).val();
-        //         console.log($(e.delegateTarget))
-        //         console.log($(e.delegateTarget).find("option[value='" + val + "']"))
-        //         $(e.delegateTarget).find("option[value='" + val + "']").prop('disabled', true);
-        //     });
-        // });
     };
 
     Specific.prototype.init = function () {
@@ -164,6 +166,12 @@
         });
 
         $(document).on('blur', '.specific_value input', function () {
+            _this.getAttr();
+            console.log($(this).val());
+        });
+
+        $(document).on('change', '.specific_value select', function () {
+            _this.getAttr();
             console.log($(this).val());
         });
 
@@ -209,6 +217,37 @@
         return html;
     };
 
+    Specific.prototype.getAttr = function () {
+        let attr = {}; // 所有属性
+        let _this = this;
+        let trs = _this.warp.find('.box');
+        console.log(trs)
+        trs.each(function () {
+            let tr = $(this);
+            let attr_name = tr.find('.box-header select').val(); // 属性名
+            let attr_val = []; // 属性值
+            if (attr_name) {
+                // 获取对应的属性值
+                tr.next('.box-body input').each(function () {
+                    let ipt_val = $(this).val();
+                    if (ipt_val) {
+                        attr_val.push(ipt_val)
+                    }
+                });
+            }
+            if (attr_val.length) {
+                attr[attr_name] = attr_val;
+            }
+        });
+
+        console.log(attr);
+
+        if (JSON.stringify(_this.attrs) !== JSON.stringify(attr)) {
+            _this.attrs = attr;
+            console.log(attr)
+            // _this.SKUForm()
+        }
+    };
 
     Specific.prototype.buildValueHtml = function () {
         var html = '<div class="input-group col-sm-3 specific_value">\n' +
