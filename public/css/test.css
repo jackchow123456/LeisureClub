@@ -1,0 +1,173 @@
+.page-heading {
+    display: none;
+}
+
+.wrapper-content {
+    padding: 0;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    background: #F7F7F7;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+}
+
+img {
+    border: 0;
+    width: 100px;
+}
+
+#container {
+    padding: 0px 10px 7px 10px;
+    height: 430px;
+}
+
+#menu {
+    clear: both;
+    height: 29px;
+    margin-bottom: 3px;
+}
+
+#column-left {
+    background: #FFF;
+    border: 1px solid #CCC;
+    float: left;
+    width: 25%;
+    height: 410px;
+    overflow: auto;
+}
+
+#column-right {
+    background: #FFF;
+    border: 1px solid #CCC;
+    float: right;
+    width: 73%;
+    /*height: 410px;
+    overflow: auto;*/
+    text-align: center;
+}
+
+#column-right .fileList {
+    height: 375px;
+    overflow: auto;
+}
+
+#column-right div {
+    text-align: left;
+    padding: 5px;
+}
+
+#column-right a {
+    cursor: pointer;
+    display: inline-block;
+}
+
+#column-right .sortDiv {
+    float: left;
+}
+
+#column-right .typeDiv {
+    float: right;
+}
+
+#column-right .typeDiv a {
+    margin-left: 8px;
+}
+
+#column-right .typeDiv a.active {
+    color: #cc5500;
+}
+
+#column-right .sortDiv a {
+    display: inline-block;
+    padding-right: 12px;
+    margin-right: 10px;
+}
+
+#column-right .sortDiv a.asc {
+    /*background: url({{asset('admin_template/images/filemanager/asc.png')}}) no-repeat right 50%;*/
+}
+
+#column-right .sortDiv a.desc {
+    /*background: url({{asset('admin_template/images/filemanager/desc.png')}}) no-repeat right 50%;*/
+}
+
+#column-right .topDiv {
+    overflow: hidden;
+}
+
+#column-right .fileList a {
+    /*display: inline-block;*/
+    text-align: center;
+    border: 1px solid #EEEEEE;
+    /*cursor: pointer;*/
+    margin: 5px;
+    padding: 5px;
+}
+
+#column-right .fileList a.selected {
+    border: 1px solid #7DA2CE;
+    background: #EBF4FD;
+}
+
+#column-right .fileList table {
+    border-top: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+}
+
+#column-right .fileList table > thead td {
+    background: #e3e3e3;
+    padding: 2px 4px;
+}
+
+#column-right .fileList table td {
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    padding: 0 4px;
+}
+
+#column-right .fileList table a {
+    padding: 4px;
+    margin: 0;
+    display: block;
+    text-align: left;
+}
+
+#column-right .fileList a > span {
+    overflow: hidden;
+    width: 110px;
+    display: block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#dialog {
+    display: none;
+}
+
+.button {
+    display: block;
+    float: left;
+    padding: 8px 5px 8px 25px;
+    margin-right: 5px;
+    background-position: 5px 6px;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #EEEEEE;
+}
+
+.thumb {
+    padding: 5px;
+    width: 105px;
+    height: 105px;
+    background: #F7F7F7;
+    border: 1px solid #CCCCCC;
+    cursor: pointer;
+    cursor: move;
+    position: relative;
+}
