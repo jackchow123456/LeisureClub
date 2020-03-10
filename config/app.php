@@ -68,7 +68,6 @@ return [
     */
 
     'timezone' => 'Asia/Shanghai',
-//    'timezone' => 'UTC',
 
     /*
     |--------------------------------------------------------------------------
@@ -81,7 +80,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'zh-CN',
 
     /*
     |--------------------------------------------------------------------------
@@ -178,6 +177,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\SmsServiceProvider::class,
 
+        JackChow\SpecificServerProvider::class,
     ],
 
     /*
@@ -223,7 +223,6 @@ return [
         'Route' => Illuminate\Support\Facades\Route::class,
         'Schema' => Illuminate\Support\Facades\Schema::class,
         'Session' => Illuminate\Support\Facades\Session::class,
-
         'Storage' => Illuminate\Support\Facades\Storage::class,
         'Str' => Illuminate\Support\Str::class,
         'URL' => Illuminate\Support\Facades\URL::class,
@@ -233,7 +232,8 @@ return [
         'SmsManager' => Toplan\Sms\Facades\SmsManager::class,
 
         'Sms\SmsRepository' => App\Facades\Sms\SmsRepository::class,
-        'Auth\AuthRepository' => App\Facades\Auth\AuthRepository::class,
+
+
     ],
 
 ];

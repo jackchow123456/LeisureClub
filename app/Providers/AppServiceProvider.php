@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\Finder\Finder;
+use Illuminate\Http\Resources\Json\Resource;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,5 +31,6 @@ class AppServiceProvider extends ServiceProvider
             $fileNmae = rtrim($v->getFilename(), '.php');
             $this->app->singleton("{$baseNmae}\\{$fileNmae}", "App\\Repository\\$baseNmae\\$fileNmae");
         }
+        Resource::withoutWrapping();
     }
 }
