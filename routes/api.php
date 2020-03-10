@@ -36,6 +36,13 @@ Route::get('post', 'Post\PostController@index');
 // Api 路由
 
 Route::group([
+    'prefix' => 'admin',
+    'namespace' => '\App\Admin\Controllers\Api',
+], function (Router $router) {
+    Route::get('/post/getList', 'PostApiController@getList');
+});
+
+Route::group([
     'prefix' => 'admin/'.config('store.prefix', 'store'),
     'namespace' => '\App\Admin\Controllers\Api\Store',
 ], function (Router $router) {

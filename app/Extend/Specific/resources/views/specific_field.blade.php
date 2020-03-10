@@ -75,7 +75,16 @@
                     <div class="box-body no-padding">
                         <table class="table table-striped specific_table">
                             <thead></thead>
-                            <tbody></tbody>
+                            <tbody>
+                            <tr>
+                                <td data-field="颜色">红色</td>
+                                <td data-field="pic"><input value="" type="hidden" class="form-control">
+                                    <span class="Js_sku_upload">+</span>
+                                </td>
+                                <td data-field="price"><input value="0" type="text" class="form-control"></td>
+                                <td data-field="stock"><input value="0" type="text" class="form-control"></td>
+                            </tr>
+                            </tbody>
                         </table>
                     </div>
                     <!-- /.box-body -->

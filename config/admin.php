@@ -405,6 +405,12 @@ return [
             'config' => [
                 'initialFrameHeight' => 400, // 例如初始化高度
             ],
+
+            'media-manager' => [
+
+                // Select a local disk that you configured in `config/filesystem.php`
+                'disk' => 'public'
+            ],
             // 'field_type' => '自定义名字'
         ]
     ],

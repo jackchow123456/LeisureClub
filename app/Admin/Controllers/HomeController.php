@@ -31,4 +31,13 @@ class HomeController extends Controller
                 });
             });
     }
+
+    public function test(Content $content)
+    {
+        $testView = view('admin.home.test');
+        return $content
+            ->title('我的测试')
+            ->description('测试页面...')
+            ->row($testView);
+    }
 }

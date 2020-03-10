@@ -144,12 +144,6 @@
             var html = _this.buildSpecificBoxHtml();
             $(this).before(html);
             _this.bindSelect2();
-            $('.specific_warp').find('.box').boxWidget({
-                animationSpeed: 250,
-                collapseIcon: 'fa-minus',
-                expandIcon: 'fa-plus',
-                removeIcon: 'fa-times'
-            })
         });
 
         $(document).on('click', _this.class + ' .add', function (event) {
@@ -178,6 +172,7 @@
 
         $(document).on('click', _this.class + ' .remove', function () {
             $(this).parents('.input-group').remove();
+            _this.getAttr();
         });
     };
 
@@ -243,12 +238,12 @@
 
         if (JSON.stringify(_this.attrs) !== JSON.stringify(attr)) {
             _this.attrs = attr;
-            _this.BuildForm()
+            _this.buildForm()
         }
     };
 
     // 生成具体的SKU配置表单
-    Specific.prototype.BuildForm = function (default_sku) {
+    Specific.prototype.buildForm = function (default_sku) {
         let _this = this;
         let attr_names = Object.keys(_this.attrs);
         if (attr_names.length == 0) {
@@ -287,7 +282,7 @@
                     let attr_name = attr_names[index];
                     tbody_html += '<td data-field="' + attr_name + '">' + attr_val + '</td>';
                 });
-                tbody_html += '<td data-field="pic"><input value="" type="hidden" class="form-control"><span class="Js_sku_upload">+</span><span class="Js_sku_del_pic">清空</span></td>';
+                tbody_html += '<td data-field="pic"><input value="" type="hidden" class="form-control"><span class="Js_sku_upload">+</span></td>';
                 tbody_html += '<td data-field="price"><input value="' + _this.commonPrice + '" type="text" class="form-control"></td>';
                 tbody_html += '<td data-field="stock"><input value="' + _this.commonStock + '" type="text" class="form-control"></td>';
                 tbody_html += '</tr>'
