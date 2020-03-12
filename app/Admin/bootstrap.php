@@ -20,7 +20,7 @@
 
 Encore\Admin\Form::forget(['map', 'editor']);
 app('view')->prependNamespace('admin', resource_path('views/admin'));
-Admin::css('https://use.fontawesome.com/releases/v5.6.3/css/all.css');
+Admin::css('extensions/font-awesome-4.7.0/css/font-awesome.min.css');
 Admin::css('extensions/bootstrap-table/dist/bootstrap-table.css');
 Admin::js('extensions/bootstrap-table/dist/bootstrap-table.min.js');
 Admin::js('extensions/bootstrap-table/dist/locale/bootstrap-table-zh-CN.js');

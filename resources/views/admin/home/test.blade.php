@@ -14,40 +14,6 @@
     &nbsp;开始演示文件管理模态框
 </button>
 
-<input id="input-702" name="kartik-input-702[]" type="file" multiple=true class="file-loading">
-
-<script>
-    $(document).ready(function () {
-        var footerTemplate = '<div class="file-thumbnail-footer" style ="height:94px">\n' +
-            '   <div style="margin:5px 0">\n' +
-            '       <input class="kv-input kv-new form-control input-sm text-center {TAG_CSS_NEW}" value="{caption}"         placeholder="Enter caption...">\n' +
-            '       <input class="kv-input kv-init form-control input-sm text-center {TAG_CSS_INIT}" value="{TAG_VALUE}" placeholder="Enter caption...">\n' +
-            '   </div>\n' +
-            '   {size} {progress} {actions}\n' +
-            '</div>';
-
-        $("#input-702").fileinput({
-            uploadUrl: "http://localhost/file-upload-batch/1", // 服务器接收上传文件方法
-            uploadAsync: false,
-            showPreview: false,
-            allowedFileExtensions: ['jpg', 'png', 'gif'],
-            maxFileCount: 5,
-            elErrorContainer: '#kv-error-2'
-        }).on('filebatchpreupload', function(event, data, id, index) {
-            $('#kv-success-2').html('<h4>上传状态</h4><ul></ul>').hide();
-        }).on('filebatchuploadsuccess', function(event, data) {
-            var out = '';
-            $.each(data.files, function(key, file) {
-                var fname = file.name;
-                out = out + '<li>' + '上传文件 # ' + (key + 1) + ' - '  +  fname + ' 成功。' + '</li>';
-            });
-            $('#kv-success-2 ul').append(out);
-            $('#kv-success-2').fadeIn('slow');
-        });
-    })
-</script>
-
-
 <!-- 模态框（Modal） -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static"
      aria-hidden>
@@ -66,7 +32,7 @@
 
                 <form class="form-inline" id="toolbar">
                     <div class="form-group">
-                        <div class="input-group date">
+                        <div class="date">
                             <select class="select2" style="width: 80px; display: table-cell" name="key">
                                 <option value="title">标题</option>
                                 <option value="user_id">用户ID</option>
@@ -119,7 +85,7 @@
 
         $("#mytable").bootstrapTable({
             locale: "zh-CN",
-            url: "/api/admin/post/getList",  //请求地址
+            url: "http://entry.com/api/entry/application/login",  //请求地址
             striped: true, //是否显示行间隔色
             pageNumber: 1, //初始化加载第一页
             pagination: true,//是否分页
@@ -182,7 +148,6 @@
 
 
 <script type="text/javascript" src="{{asset('extensions/jstree/dist/jstree.min.js')}}"></script>
-<script type="text/javascript" src="{{asset('extensions/ajaxupload.js')}}"></script>
 <script type="text/javascript" src="{{asset('js/test.js')}}"></script>
 
 <script>
@@ -191,6 +156,11 @@
     var FilesRoute = '{{route('fileManager.files')}}';
     var CreateRoute = '{{route('fileManager.create')}}';
     var UploadRoute = '{{route('fileManager.upload')}}';
+    var DeleteRoute = '{{route('fileManager.delete')}}';
+    var MoveRoute = '{{route('fileManager.move')}}';
+    var CopyRoute = '{{route('fileManager.copy')}}';
+    var RenameRoute = '{{route('fileManager.rename')}}';
+    var FoldersRoute = '{{route('fileManager.folders')}}';
 
     $('.file').on('click', function () {
         $(this).jacktree({
@@ -199,9 +169,16 @@
             "FilesRoute": FilesRoute,
             "CreateRoute": CreateRoute,
             "UploadRoute": UploadRoute,
+            "DeleteRoute": DeleteRoute,
+            "MoveRoute": MoveRoute,
+            "CopyRoute": CopyRoute,
+            "RenameRoute": RenameRoute,
+            "FoldersRoute": FoldersRoute,
             "callback": function (data) {
                 console.log(data);
             }
         });
     });
 </script>
+
+

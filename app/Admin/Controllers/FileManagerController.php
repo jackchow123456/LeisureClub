@@ -100,8 +100,8 @@ class FileManagerController extends Controller
 
                     $json[] = array(
                         'filename' => basename($file),
-                        'file' => $this->path.utf8_substr($file, utf8_strlen($this->basicPath)),
-                        'fileuri' => url($this->path.utf8_substr($file, utf8_strlen($this->basicPath))),
+                        'file' => $this->path . utf8_substr($file, utf8_strlen($this->basicPath)),
+                        'fileuri' => url($this->path . utf8_substr($file, utf8_strlen($this->basicPath))),
                         'size' => round(utf8_substr($size, 0, utf8_strpos($size, '.') + 4), 2) . $suffix[$i],
                         'filetime' => filectime($file),
                         'filesize' => filesize($file),
@@ -164,9 +164,9 @@ class FileManagerController extends Controller
                     $json['error'] = '警告：文件名或目录名已存在!';
                 }
 
-                if (!preg_match('/^\w+$/i', $request['name'])) {
-                    $json['error'] = '警告：文件名非法!';
-                }
+//                if (!preg_match('/^\w+$/i', $request['name'])) {
+//                    $json['error'] = '警告：文件名非法!';
+//                }
 
             } else {
                 $json['error'] = '警告：请输入一个新名称!';
@@ -210,46 +210,77 @@ class FileManagerController extends Controller
         return $json;
     }
 
+
+    /**
+     * 删除
+     *
+     * @param Request $request
+     * @return array
+     */
     public function delete(Request $request)
     {
         $json = array();
 
+        $is_file = false;
+
         if (isset($request['path'])) {
-            $path = rtrim($this->basicPath . str_replace('../', '', html_entity_decode($request['path'], ENT_QUOTES, 'UTF-8')), '/');
 
-            if (!file_exists($path)) {
-                $json['error'] = '警告：请选择一个目录或文件!';
-            }
+            $is_file = is_array($request['path']) ? true : false;
 
-            if ($path == rtrim($this->basicPath, '/')) {
-                $json['error'] = '警告：您不能删除此目录!';
+            if ($is_file) {
+                $path = [];
+                foreach ($request['path'] as $v) {
+
+                    $filePath = rtrim($this->basicPath . str_replace($this->path, '', $v));
+
+                    if (!file_exists($filePath)) {
+                        $json['error'] = '警告：请选择一个目录或文件!';
+                    }
+
+                    if ($filePath == rtrim($this->basicPath, '/')) {
+                        $json['error'] = '警告：您不能删除此目录!';
+                    }
+
+                    $path[] = $filePath;
+                }
+            } else {
+                $path = rtrim($this->basicPath . str_replace($this->path, '', $request['path']));
+
+                if (!file_exists($path)) {
+                    $json['error'] = '警告：请选择一个目录或文件!';
+                }
+
+                if ($path == rtrim($this->basicPath, '/')) {
+                    $json['error'] = '警告：您不能删除此目录!';
+                }
             }
         } else {
             $json['error'] = '警告：请选择一个目录或文件!';
         }
 
         if (!isset($json['error'])) {
-            if (is_file($path)) {
-                unlink($path);
+            if ($is_file) {
+                foreach ($path as $v) {
+                    unlink($v);
+                }
             } elseif (is_dir($path)) {
                 $files = array();
 
-                $path = array($path . '*');
+                $originPath = $path;
+
+                $path = array($path . '/*');
 
                 while (count($path) != 0) {
                     $next = array_shift($path);
-
                     foreach (glob($next) as $file) {
                         if (is_dir($file)) {
                             $path[] = $file . '/*';
                         }
-
                         $files[] = $file;
                     }
+
                 }
-
                 rsort($files);
-
                 foreach ($files as $file) {
                     if (is_file($file)) {
                         unlink($file);
@@ -257,6 +288,8 @@ class FileManagerController extends Controller
                         rmdir($file);
                     }
                 }
+
+                rmdir($originPath);
             }
 
 
@@ -286,43 +319,91 @@ class FileManagerController extends Controller
         return $output;
     }
 
+    /**
+     * 移动
+     *
+     * @param Request $request
+     * @return array
+     */
     public function move(Request $request)
     {
 
         $json = array();
 
         if (isset($request['from']) && isset($request['to'])) {
-            $from = rtrim($this->basicPath . str_replace('../', '', html_entity_decode($request['from'], ENT_QUOTES, 'UTF-8')), '/');
 
-            if (!file_exists($from)) {
-                $json['error'] = '警告：文件或目录不存在!';
-            }
+            $is_file = is_array($request['from']) ? true : false;
 
-            if ($from == $this->basicPath) {
-                $json['error'] = '警告：不能更改默认目录!';
-            }
-
-            $to = rtrim($this->basicPath . str_replace('../', '', html_entity_decode($request['to'], ENT_QUOTES, 'UTF-8')), '/');
+            $to = rtrim($this->basicPath . str_replace($this->path, '', $request['to']));
 
             if (!file_exists($to)) {
                 $json['error'] = '警告：移动至目标目录不存在!';
             }
 
-            if (file_exists($to . '/' . basename($from))) {
-                $json['error'] = '警告：文件名或目录名已存在!';
+            if ($is_file) {
+                $from = [];
+
+                foreach ($request['from'] as $v) {
+
+                    $filePath = rtrim($this->basicPath . str_replace($this->path, '', $v));
+
+                    if (!file_exists($filePath)) {
+                        $json['error'] = '警告：请选择一个目录或文件!';
+                    }
+
+                    if ($filePath == rtrim($this->basicPath, '/')) {
+                        $json['error'] = '警告：您不能删除此目录!';
+                    }
+
+                    if (file_exists($to . '/' . basename($filePath))) {
+                        $json['error'] = '警告：文件名或目录名已存在!';
+                    }
+
+                    $from[] = $filePath;
+                }
+            } else {
+                $from = rtrim($this->basicPath . str_replace($this->path, '', $request['from']));
+                $from = rtrim($from, '/');
+
+                if (!file_exists($from)) {
+                    $json['error'] = '警告：文件或目录不存在!';
+                }
+
+                if ($from == $this->basicPath) {
+                    $json['error'] = '警告：不能更改默认目录!';
+                }
+
+                if (file_exists($to . '/' . basename($from))) {
+                    $json['error'] = '警告：文件名或目录名已存在!';
+                }
             }
+
+
         } else {
             $json['error'] = '警告：请选择一个目录!';
         }
 
         if (!isset($json['error'])) {
-            rename($from, $to . '/' . basename($from));
+            if (is_array($from)) {
+                foreach ($from as $v) {
+                    rename($v, $to . '/' . basename($v));
+                }
+            } else {
+                rename($from, $to . '/' . basename($from));
+            }
+
             $json['success'] = '成功：文件或目录已被移动!';
         }
 
         return $json;
     }
 
+    /**
+     * 复制
+     *
+     * @param Request $request
+     * @return array
+     */
     public function copy(Request $request)
     {
 
@@ -333,7 +414,7 @@ class FileManagerController extends Controller
                 $json['error'] = '警告：文件名必须在3至255个字符之间!';
             }
 
-            $old_name = rtrim($this->basicPath . str_replace('../', '', html_entity_decode($request['path'], ENT_QUOTES, 'UTF-8')), '/');
+            $old_name = rtrim($this->basicPath . str_replace($this->path, '', $request['path']), '/');
 
             if (!file_exists($old_name) || $old_name == $this->basicPath) {
                 $json['error'] = '警告：无法复制这个文件或目录!';
@@ -345,7 +426,7 @@ class FileManagerController extends Controller
                 $ext = '';
             }
 
-            $new_name = dirname($old_name) . '/' . str_replace('../', '', html_entity_decode($request['name'], ENT_QUOTES, 'UTF-8') . $ext);
+            $new_name = dirname($old_name) . '/' . str_replace($this->path, '', $request['name'] . $ext);
 
             if (file_exists($new_name)) {
                 $json['error'] = '警告：文件名或目录名已存在!';
@@ -387,6 +468,12 @@ class FileManagerController extends Controller
         closedir($directory);
     }
 
+    /**
+     * 重命名
+     *
+     * @param Request $request
+     * @return array
+     */
     public function rename(Request $request)
     {
         $json = array();
@@ -396,11 +483,11 @@ class FileManagerController extends Controller
                 $json['error'] = '警告：文件名必须在3至255个字符之间!';
             }
 
-            if (!preg_match('/^\w+$/i', $request['name'])) {
-                $json['error'] = '名字非法';
-            }
+//            if (!preg_match('/^\w+$/i', $request['name'])) {
+//                $json['error'] = '名字非法';
+//            }
 
-            $old_name = rtrim($this->basicPath . str_replace('../', '', html_entity_decode($request['path'], ENT_QUOTES, 'UTF-8')), '/');
+            $old_name = rtrim($this->basicPath . str_replace($this->path, '', $request['path']), '/');
 
             if (!file_exists($old_name) || $old_name == $this->basicPath) {
                 $json['error'] = '警告：不能重命名此目录!';
@@ -412,7 +499,7 @@ class FileManagerController extends Controller
                 $ext = '';
             }
 
-            $new_name = dirname($old_name) . '/' . str_replace(' ', '_', str_replace('../', '', html_entity_decode($request['name'], ENT_QUOTES, 'UTF-8')) . $ext);
+            $new_name = dirname($old_name) . '/' . str_replace(' ', '_', str_replace('../', '', $request['name']) . $ext);
 
             if (file_exists($new_name)) {
                 $json['error'] = '警告：文件名或目录名已存在!';
@@ -429,9 +516,14 @@ class FileManagerController extends Controller
         return $json;
     }
 
+    /**
+     * 文件上传
+     *
+     * @param Request $request
+     * @return array
+     */
     public function upload(Request $request)
     {
-//        $request->file()['image']->getClientOriginalName()
         $json = array();
         $directory = $request['directory'] . '/';
 

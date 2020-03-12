@@ -2,7 +2,7 @@
 /node_modules
 /public/hot
 /public/storage
-/public/upload
+/public/upload/*
 /storage/*.key
 /vendor
 .env
