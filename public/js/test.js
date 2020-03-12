@@ -80,7 +80,7 @@ $.fn.jacktree = function (arg) {
             }
         });
 
-    // $('#column-left').trigger('changed.jstree');
+    $('#column-left').trigger('changed.jstree');
 
     // 排序点击
     $(document).off('click', '#column-right .sortDiv  a');
