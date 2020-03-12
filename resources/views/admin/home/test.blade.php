@@ -85,7 +85,7 @@
 
         $("#mytable").bootstrapTable({
             locale: "zh-CN",
-            url: "http://entry.com/api/entry/application/login",  //请求地址
+            url: "/api/admin/post/getList",  //请求地址
             striped: true, //是否显示行间隔色
             pageNumber: 1, //初始化加载第一页
             pagination: true,//是否分页
