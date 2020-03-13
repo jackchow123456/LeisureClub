@@ -231,7 +231,7 @@ class FileManagerController extends Controller
                 $path = [];
                 foreach ($request['path'] as $v) {
 
-                    $filePath = rtrim($this->basicPath . str_replace($this->path, '', $v));
+                    $filePath = rtrim($this->basicPath . str_replace('../', '', str_replace($this->path, '', $v)));
 
                     if (!file_exists($filePath)) {
                         $json['error'] = '警告：请选择一个目录或文件!';
@@ -244,7 +244,7 @@ class FileManagerController extends Controller
                     $path[] = $filePath;
                 }
             } else {
-                $path = rtrim($this->basicPath . str_replace($this->path, '', $request['path']));
+                $path = rtrim($this->basicPath . str_replace('../', '', str_replace($this->path, '', $request['path'])));
 
                 if (!file_exists($path)) {
                     $json['error'] = '警告：请选择一个目录或文件!';
@@ -334,7 +334,7 @@ class FileManagerController extends Controller
 
             $is_file = is_array($request['from']) ? true : false;
 
-            $to = rtrim($this->basicPath . str_replace($this->path, '', $request['to']));
+            $to = rtrim($this->basicPath . str_replace('../', '', str_replace($this->path, '', $request['to'])));
 
             if (!file_exists($to)) {
                 $json['error'] = '警告：移动至目标目录不存在!';
@@ -345,7 +345,7 @@ class FileManagerController extends Controller
 
                 foreach ($request['from'] as $v) {
 
-                    $filePath = rtrim($this->basicPath . str_replace($this->path, '', $v));
+                    $filePath = rtrim($this->basicPath . str_replace('../', '', str_replace($this->path, '', $v)));
 
                     if (!file_exists($filePath)) {
                         $json['error'] = '警告：请选择一个目录或文件!';
@@ -414,7 +414,7 @@ class FileManagerController extends Controller
                 $json['error'] = '警告：文件名必须在3至255个字符之间!';
             }
 
-            $old_name = rtrim($this->basicPath . str_replace($this->path, '', $request['path']), '/');
+            $old_name = rtrim($this->basicPath . str_replace('../', '', str_replace($this->path, '', $request['path'])), '/');
 
             if (!file_exists($old_name) || $old_name == $this->basicPath) {
                 $json['error'] = '警告：无法复制这个文件或目录!';
@@ -426,7 +426,7 @@ class FileManagerController extends Controller
                 $ext = '';
             }
 
-            $new_name = dirname($old_name) . '/' . str_replace($this->path, '', $request['name'] . $ext);
+            $new_name = dirname($old_name) . '/' . str_replace('../', '', str_replace($this->path, '', $request['name']) . $ext);
 
             if (file_exists($new_name)) {
                 $json['error'] = '警告：文件名或目录名已存在!';
@@ -487,7 +487,7 @@ class FileManagerController extends Controller
 //                $json['error'] = '名字非法';
 //            }
 
-            $old_name = rtrim($this->basicPath . str_replace($this->path, '', $request['path']), '/');
+            $old_name = rtrim($this->basicPath . str_replace('../', '', str_replace($this->path, '', $request['path'])), '/');
 
             if (!file_exists($old_name) || $old_name == $this->basicPath) {
                 $json['error'] = '警告：不能重命名此目录!';
@@ -500,7 +500,6 @@ class FileManagerController extends Controller
             }
 
             $new_name = dirname($old_name) . '/' . str_replace(' ', '_', str_replace('../', '', $request['name']) . $ext);
-
             if (file_exists($new_name)) {
                 $json['error'] = '警告：文件名或目录名已存在!';
             }

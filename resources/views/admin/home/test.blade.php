@@ -14,6 +14,9 @@
     &nbsp;开始演示文件管理模态框
 </button>
 
+<label class="control-label">Select File</label>
+<input id="input" name="input[]" type="file" multiple class="file-loading">
+
 <!-- 模态框（Modal） -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static"
      aria-hidden>

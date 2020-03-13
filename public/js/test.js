@@ -216,6 +216,7 @@ $.fn.jacktree = function (arg) {
             uploadAsync: true,  //异步上传
             minFileCount: 1,    //最小上传文件数： 1
             maxFileCount: 5,    //最大上传文件数： 5
+            allowedFileTypes: ["image", "video"],
             initialPreviewAsData: true,      // 确定传入预览数据，而不是原生标记语言
             initialPreviewFileType: 'image', // 默认为`image`，可以在下面配置中被覆盖
             uploadExtraData: {    //上传额外数据
