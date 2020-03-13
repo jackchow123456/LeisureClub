@@ -344,11 +344,6 @@ $.fn.jacktree = function (arg) {
             $('#dialog').modal('hide');
         });
 
-        $('#dialog .createMoveBtn').bind('click', function () {
-            getFiles(currentPath);
-            $('#dialog').modal('hide');
-        });
-
         $('#dialog select[name=\'to\']').select2();
 
         $('#dialog select[name=\'to\']').load(FoldersRoute);
@@ -370,10 +365,7 @@ $.fn.jacktree = function (arg) {
                     dataType: 'json',
                     success: function (json) {
                         if (json.success) {
-                            $('#dialog').remove();
-
                             tree.refresh();
-
                             alert(json.success);
                         }
 
@@ -396,10 +388,7 @@ $.fn.jacktree = function (arg) {
                         dataType: 'json',
                         success: function (json) {
                             if (json.success) {
-                                $('#dialog').remove();
-
                                 tree.refresh();
-
                                 alert(json.success);
                             }
 
@@ -415,6 +404,7 @@ $.fn.jacktree = function (arg) {
                     alert('警告：请选择一个目录或文件!');
                 }
             }
+            $('#dialog').modal('hide');
         });
     });
 
@@ -449,13 +439,11 @@ $.fn.jacktree = function (arg) {
         $('#dialog').modal('show');
 
 
-        // 新建文件夹关闭按钮
         $('#dialog .cancelCopyBtn').unbind('click');
         $('#dialog .cancelCopyBtn').bind('click', function () {
             $('#dialog').modal('hide');
         });
 
-        // 新建文件夹按钮点击事件
         $('#dialog .createCopyBtn').unbind('click');
         $('#dialog .createCopyBtn').bind('click', function () {
 
@@ -477,10 +465,7 @@ $.fn.jacktree = function (arg) {
                     dataType: 'json',
                     success: function (json) {
                         if (json.success) {
-                            $('#dialog').remove();
-
                             tree.refresh();
-
                             alert(json.success);
                         }
 
@@ -503,10 +488,7 @@ $.fn.jacktree = function (arg) {
                         dataType: 'json',
                         success: function (json) {
                             if (json.success) {
-                                $('#dialog').remove();
-
                                 tree.refresh();
-
                                 alert(json.success);
                             }
 
@@ -523,6 +505,9 @@ $.fn.jacktree = function (arg) {
                 }
 
             }
+
+            $('#dialog').modal('hide');
+
         });
     });
 
@@ -533,8 +518,6 @@ $.fn.jacktree = function (arg) {
         $('#dialog').remove();
 
         var tree = $.jstree.reference('#column-left');
-
-        $('#dialog').remove();
 
         html = '<div id="dialog" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">';
         html += '<div class="modal-dialog modal-sm" role="document">';
@@ -587,10 +570,7 @@ $.fn.jacktree = function (arg) {
                     dataType: 'json',
                     success: function (json) {
                         if (json.success) {
-                            $('#dialog').remove();
-
                             tree.refresh();
-
                             alert(json.success);
                         }
 
@@ -612,10 +592,7 @@ $.fn.jacktree = function (arg) {
                         dataType: 'json',
                         success: function (json) {
                             if (json.success) {
-                                $('#dialog').remove();
-
                                 tree.refresh();
-
                                 alert(json.success);
                             }
 
@@ -631,6 +608,7 @@ $.fn.jacktree = function (arg) {
                     alert('警告：请选择一个目录或文件!');
                 }
             }
+            $('#dialog').modal('hide');
         });
     });
 

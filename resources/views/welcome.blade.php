@@ -21,7 +21,7 @@
         }
 
         .full-height {
-            height: 100vh;
+            height: 95vh;
         }
 
         .flex-center {
@@ -98,5 +98,6 @@
     </div>
 </div>
 <div class="footer" style="text-align: center"><strong><a href="http://www.beian.miit.gov.cn" target="_blank">粤ICP备19142756号-1</a></strong></div>
+
 </body>
 </html>
