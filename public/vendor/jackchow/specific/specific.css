@@ -97,3 +97,30 @@
     background-size: 100%;
     background-repeat:no-repeat;
 }
+
+.sku-galley {
+    width: 150px;
+    overflow-x: auto;
+}
+.sku-pictures {
+    width: max-content;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.sku-pictures > li {
+    display: inline-block;
+    height: 40px;
+    width: 40px;
+    text-align: center;
+}
+
+.sku-pictures > li > img {
+    cursor: -webkit-zoom-in;
+    cursor: zoom-in;
+    width: 100%;
+}
+.td_pic{
+    padding: 8px 0 0;
+}

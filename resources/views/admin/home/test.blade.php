@@ -5,12 +5,13 @@
 <link rel="stylesheet" href="{{asset('extensions/jstree/dist/themes/default/style.min.css')}}"></link>
 <link rel="stylesheet" href="{{asset('css/test.css')}}"></link>
 
+
 <!-- 按钮触发模态框 -->
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
     &nbsp;开始演示模态框
 </button>
 
-<button type="button" class="btn btn-primary file" data-toggle="modal" data-target="#fileModel">
+<button type="button" class="btn btn-primary file" data-toggle="modal">
     &nbsp;开始演示文件管理模态框
 </button>
 
@@ -162,6 +163,7 @@
     var RenameRoute = '{{route('fileManager.rename')}}';
     var FoldersRoute = '{{route('fileManager.folders')}}';
 
+
     $('.file').on('click', function () {
         $(this).jacktree({
             "DirectoryRoute": DirectoryRoute,
@@ -180,5 +182,6 @@
         });
     });
 </script>
+
 
 

@@ -3,6 +3,7 @@
 namespace App\Models\Store;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 
 class Media extends Model
@@ -13,6 +14,14 @@ class Media extends Model
     protected $casts = [
         'meta' => 'array',
     ];
+    protected $appends = [
+        'image_uri'
+    ];
+
+    public function getImageUriAttribute()
+    {
+        return url($this->path);
+    }
 
 
     public function __construct(array $attributes = [])

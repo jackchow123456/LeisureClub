@@ -27,5 +27,16 @@ class GoodsSku extends Model
     }
 
 
+    public function mediaCategory()
+    {
+        return $this->hasOne(MediaCategory::class, 'use_id');
+    }
+
+    public function goods()
+    {
+        return $this->belongsTo(Goods::class, 'id');
+    }
+
+
     const status = [-1, 0, 1];
 }

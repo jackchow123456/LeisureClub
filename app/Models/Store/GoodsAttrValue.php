@@ -15,4 +15,9 @@ class GoodsAttrValue extends Model
 
         parent::__construct($attributes);
     }
+
+    public function attr()
+    {
+        return $this->belongsTo(GoodsAttrValue::class);
+    }
 }

@@ -23,7 +23,7 @@ class MediaCategory extends Model
      */
     public function medias()
     {
-        return $this->hasMany(Media::class, 'mc_id')->where('is_delete', 0);
+        return $this->hasMany(Media::class, 'mc_id');
     }
 
     public static function make(...$parameters)

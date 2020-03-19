@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Http\Request;
 use SwooleTW\Http\Websocket\Facades\Websocket;
 
@@ -12,6 +13,7 @@ use SwooleTW\Http\Websocket\Facades\Websocket;
 */
 Websocket::on('connect', function ($websocket, Request $request) {
     // called while socket on connect
+    echo 'connect' . PHP_EOL;
     $websocket->emit('message', 'welcome');
 });
 
@@ -20,11 +22,13 @@ Websocket::on('disconnect', function ($websocket) {
 });
 
 Websocket::on('example', function ($websocket, $data) {
-    $websocket->emit('message', $data);
+//    $websocket->emit('message', 'example');
+    echo $data . PHP_EOL;
+    $websocket->broadcast()->emit('example', $data);
 });
 
 Websocket::on('vote', function ($websocket, $data) {
     // called while socket on connect
-    $data = str_replace("\"", "\\\"" , $data);
+    $data = str_replace("\"", "\\\"", $data);
     $websocket->broadcast()->emit('vote', $data);
 });

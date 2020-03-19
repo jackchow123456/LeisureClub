@@ -27,9 +27,9 @@ class AppServiceProvider extends ServiceProvider
     {
         // 批量注册 Facades
         foreach (Finder::create()->files()->name('*.php')->in(app_path('Facades')) as $k => $v) {
-            $baseNmae = basename($v->getPath());
-            $fileNmae = rtrim($v->getFilename(), '.php');
-            $this->app->singleton("{$baseNmae}\\{$fileNmae}", "App\\Repository\\$baseNmae\\$fileNmae");
+            $baseName = basename($v->getPath());
+            $fileName = rtrim($v->getFilename(), '.php');
+            $this->app->singleton("{$baseName}\\{$fileName}", "App\\Repository\\$baseName\\$fileName");
         }
         Resource::withoutWrapping();
     }

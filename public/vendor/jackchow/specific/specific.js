@@ -1,6 +1,5 @@
 (function () {
 
-
     function Specific(warp) {
         this.class = warp;
         this.warp = $(warp);
@@ -9,6 +8,102 @@
         this.commonPrice = 0; // 统一价格1
         this.init();
     }
+
+    Specific.prototype.init = function () {
+        const _this = this;
+
+        _this.warp.find('.add_box').click(function () {
+            var html = _this.buildSpecificBoxHtml();
+            $(this).before(html);
+            _this.bindSelect2();
+        });
+
+        $(document).on('click', _this.class + ' .add', function (event) {
+            if ($(this).parents('.box').find('select:last').val() == '') {
+                layer.msg('请先选择规格，再添加规格值.', {icon: 0});
+                return;
+            }
+            if (!event.isPropagationStopped()) {
+                var html = _this.buildValueHtml();
+                $(this).parents('.input-group').before(html);
+            }
+            event.stopPropagation();
+        });
+
+        $(document).on('blur', '.specific_value input', function () {
+            _this.getAttr();
+        });
+
+        // 删除规格框
+        $(document).on('click', _this.class + ' .remove-box', function () {
+            $(this).parents('.box:first').slideUp(500, function () {
+                $(this).remove();
+                _this.getAttr();
+            });
+        });
+
+        // 删除规格值
+        $(document).on('click', _this.class + ' .remove', function () {
+            $(this).parents('.input-group').remove();
+            _this.getAttr();
+        });
+
+        // 绑定input变化事件
+        _this.warp.find('.specific_table tbody').on('keyup', 'input', _this.processSku.bind(_this));
+
+        // 统一价格
+        _this.warp.find('.specific_table thead').on('keyup', 'input.Js_price', function () {
+            _this.commonPrice = $(this).val();
+            _this.warp.find('.specific_table tbody td[data-field="price"] input').val(_this.commonPrice);
+            _this.processSku()
+        });
+
+        // 统一库存
+        _this.warp.find('.specific_table thead').on('keyup', 'input.Js_stock', function () {
+            _this.commonStock = $(this).val();
+            _this.warp.find('.specific_table tbody td[data-field="stock"] input').val(_this.commonStock);
+            _this.processSku()
+        });
+
+        // SKU图片上传
+        _this.warp.find('.specific_table tbody').on('click', '.Js_sku_upload', function () {
+            _this.upload($(this));
+        });
+
+        // SKU图片删除
+        _this.warp.find('.specific_table tbody').on('click', '.remove', function () {
+            $(this).parent('li').remove();
+            console.log($('.sku-pictures').viewer('destroy'));
+            console.log($('.sku-pictures').viewer().data('viewer').update());
+            _this.processSku();
+        });
+
+        let old_val = _this.warp.find('.Js_sku_input').val();
+
+        if (old_val) {
+            // 根据值生成DOM
+            old_val = JSON.parse(old_val);
+            console.log(old_val);
+
+            $.each(old_val.attrs, function (i, v) {
+                _this.warp.find('.add_box').trigger('click');
+                _this.warp.find('.box.box-default.box-solid').last().find('select').append('<option value="1" selected="selected">' + i + '</option>');
+                var boxBody = _this.warp.find('.box.box-default.box-solid').last().find('.box-body:last');
+                $.each(v, function (it, vt) {
+                    var html = _this.buildValueHtmlWithItem({'name': vt});
+                    boxBody.prepend(html);
+                });
+            });
+
+            _this.attrs = old_val.attrs;
+            _this.buildForm(old_val.sku);
+
+        } else {
+            _this.processSku()
+        }
+
+    };
+
 
     Specific.prototype.bindSelect2 = function () {
         const _this = this;
@@ -137,42 +232,18 @@
         });
     };
 
-    Specific.prototype.init = function () {
-        const _this = this;
-
-        _this.warp.find('.add_box').click(function () {
-            var html = _this.buildSpecificBoxHtml();
-            $(this).before(html);
-            _this.bindSelect2();
-        });
-
-        $(document).on('click', _this.class + ' .add', function (event) {
-            if ($(this).parents('.box').find('select:last').val() == '') {
-                layer.msg('请先选择规格，再添加规格值.', {icon: 0});
-                return;
+    Specific.prototype.upload = function (that) {
+        let _this = this;
+        that.jacktree({
+            "target": '.specific_table',
+            "callback": function (result) {
+                $.each(result, function (i, v) {
+                    that.parent('li').before('<li data-field-pic="' + v.image_path + '"><img data-original="' + v.image_uri + '" src="' + v.image_uri + '"><a class="remove" href="javascript:;">删除</a></li>');
+                })
+                $('.sku-pictures').viewer('destroy');
+                $('.sku-pictures').viewer();
+                _this.processSku();
             }
-            if (!event.isPropagationStopped()) {
-                var html = _this.buildValueHtml();
-                $(this).parents('.input-group').before(html);
-            }
-            event.stopPropagation();
-        });
-
-        $(document).on('blur', '.specific_value input', function () {
-            _this.getAttr();
-        });
-
-        $(document).on('click', _this.class + ' .remove-box', function () {
-            $(this).parents('.box:first').slideUp(500, function () {
-                $(this).remove();
-                _this.getAttr();
-            });
-
-        });
-
-        $(document).on('click', _this.class + ' .remove', function () {
-            $(this).parents('.input-group').remove();
-            _this.getAttr();
         });
     };
 
@@ -244,6 +315,7 @@
 
     // 生成具体的SKU配置表单
     Specific.prototype.buildForm = function (default_sku) {
+        console.log(default_sku);
         let _this = this;
         let attr_names = Object.keys(_this.attrs);
         if (attr_names.length == 0) {
@@ -260,7 +332,6 @@
             thead_html += '<th style="width: 100px">库存 <input value="' + _this.commonStock + '" type="text" style="width: 50px" class="Js_stock"></th>';
             thead_html += '</tr>';
             _this.warp.find('.specific_table thead').html(thead_html);
-
             // 求笛卡尔积
             let cartesianProductOf = (function () {
                 return Array.prototype.reduce.call(arguments, function (a, b) {
@@ -282,24 +353,40 @@
                     let attr_name = attr_names[index];
                     tbody_html += '<td data-field="' + attr_name + '">' + attr_val + '</td>';
                 });
-                tbody_html += '<td data-field="pic"><input value="" type="hidden" class="form-control"><span class="Js_sku_upload">+</span></td>';
+                tbody_html += '<td class="td_pic" data-field="pic">' +
+                    '<div class="sku-galley mb-3">\n' +
+                    '          <ul class="sku-pictures">\n' +
+                    '            <li><input value="" type="hidden" class="form-control"><span class="Js_sku_upload">+</span></li>&nbsp;&nbsp;\n' +
+                    '          </ul>\n' +
+                    '        </div>'
+                '<input value="" type="hidden" class="form-control"><span class="Js_sku_upload">+</span>' +
+                '</td>';
                 tbody_html += '<td data-field="price"><input value="' + _this.commonPrice + '" type="text" class="form-control"></td>';
                 tbody_html += '<td data-field="stock"><input value="' + _this.commonStock + '" type="text" class="form-control"></td>';
                 tbody_html += '</tr>'
             });
             _this.warp.find('.specific_table tbody').html(tbody_html);
 
-            if(default_sku) {
+
+            if (default_sku) {
                 // 填充数据
-                default_sku.forEach(function(item_sku, index) {
+                default_sku.forEach(function (item_sku, index) {
+
                     let tr = _this.warp.find('.specific_table tbody tr').eq(index);
-                    Object.keys(item_sku).forEach(function(field) {
-                        let input = tr.find('td[data-field="'+field+'"] input');
-                        if(input.length) {
+                    console.log(Object.keys(item_sku));
+                    Object.keys(item_sku).forEach(function (field) {
+                        let input = tr.find('td[data-field="' + field + '"] input');
+                        if (input.length) {
                             input.val(item_sku[field]);
-                            let sku_upload = tr.find('td[data-field="'+field+'"] .Js_sku_upload');
-                            if(sku_upload.length) {
-                                sku_upload.css('background-image','url('+item_sku[field]+')');
+                            let sku_upload = tr.find('td[data-field="' + field + '"] .Js_sku_upload');
+                            if (sku_upload.length && item_sku.pic.length > 0) {
+
+                                $.each(item_sku.pic, function (i, v) {
+                                    sku_upload.parent('li').before('<li data-field-pic="' + v.path + '"><img data-original="' + v.image_uri + '" src="' + v.image_uri + '"><a class="remove" href="javascript:;">删除</a></li>');
+                                });
+                                $('.sku-pictures').viewer('destroy');
+                                $('.sku-pictures').viewer();
+                                _this.processSku();
                             }
                         }
                     })
@@ -307,7 +394,7 @@
             }
         }
         $('.specific_detail').show();
-        // _this.processSku()
+        _this.processSku()
     };
 
     // 处理最终SKU数据，并写入input
@@ -315,27 +402,34 @@
         let _this = this;
         let sku_json = {};
         sku_json.type = _this.warp.find('.sku_attr_select .btn.btn-success').attr('data-type');
-        if (sku_json.type === 'many') {
-            // 多规格
-            sku_json.attrs = _this.attrs;
-            let sku = [];
-            _this.warp.find('.sku_edit_warp tbody tr').each(function () {
-                let tr = $(this);
-                let item_sku = {};
-                tr.find('td[data-field]').each(function () {
-                    let td = $(this);
-                    let field = td.attr('data-field');
-                    let input = td.find('input');
-                    if (input.length) {
-                        item_sku[field] = input.val();
-                    } else {
-                        item_sku[field] = td.text();
-                    }
-                });
-                sku.push(item_sku);
+        // 多规格
+        sku_json.attrs = _this.attrs;
+        let sku = [];
+        _this.warp.find('.specific_table tbody tr').each(function () {
+            let tr = $(this);
+            let item_sku = {};
+            tr.find('td[data-field]').each(function () {
+                let td = $(this);
+                let field = td.attr('data-field');
+                let input = td.find('input');
+                if (input.length) {
+                    item_sku[field] = input.val();
+                } else {
+                    item_sku[field] = td.text();
+                }
             });
-            sku_json.sku = sku;
-        }
+
+            var imagePath = [];
+            tr.find('td[data-field="pic"]').find('li[data-field-pic]').each(function (i, v) {
+                if ($(v).data('field-pic')) {
+                    imagePath.push($(v).data('field-pic'));
+                }
+            });
+            item_sku['pic'] = imagePath;
+
+            sku.push(item_sku);
+        });
+        sku_json.sku = sku;
         _this.warp.find('.Js_sku_input').val(JSON.stringify(sku_json));
     };
 

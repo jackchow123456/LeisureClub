@@ -21,6 +21,7 @@ class GoodsAttr extends Model
      * 销售属性值列表
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
+
     public function values()
     {
         return $this->hasMany(GoodsAttrValue::class, 'goods_attr_id');

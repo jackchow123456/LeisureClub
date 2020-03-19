@@ -28,7 +28,11 @@ class Vote extends Command
         $uri = "ws://127.0.0.1:1216";
         $websocket = new \WebSocket\Client($uri);
         try {
-            Redis::connection('default')->subscribe(['abc'], function ($data) use (&$websocket) {
+            Redis::connection('default')->subscribe(['example'], function ($data) use ($websocket, $uri) {
+                $this->info("收到的信息：{$data}");
+                if (!$websocket->isConnected()) {
+                    $websocket = new \WebSocket\Client($uri);
+                }
                 $websocket->send($data);
                 $websocket->close();
             });
@@ -37,4 +41,5 @@ class Vote extends Command
         }
 
     }
+
 }

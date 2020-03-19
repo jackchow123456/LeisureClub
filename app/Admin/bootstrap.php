@@ -26,3 +26,11 @@ Admin::js('extensions/bootstrap-table/dist/bootstrap-table.min.js');
 Admin::js('extensions/bootstrap-table/dist/locale/bootstrap-table-zh-CN.js');
 //Admin::js('extension/jstree/jquery.tree.min.js');
 //Admin::js('extension/ajaxupload.js');
+
+Admin::css('extensions/jstree/dist/themes/default/style.min.css');
+Admin::css('css/test.css');
+Admin::js('extensions/jstree/dist/jstree.min.js');
+Admin::js('js/test.js');
+Admin::css('extensions/viewer/css/viewer.css');
+Admin::js('extensions/viewer/js/viewer.js');
+Admin::js('extensions/viewer/js/jquery-viewer.js');
