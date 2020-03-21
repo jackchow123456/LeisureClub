@@ -237,6 +237,7 @@
         that.jacktree({
             "target": '.specific_table',
             "callback": function (result) {
+                console.log(result)
                 $.each(result, function (i, v) {
                     that.parent('li').before('<li data-field-pic="' + v.image_path + '"><img data-original="' + v.image_uri + '" src="' + v.image_uri + '"><a class="remove" href="javascript:;">删除</a></li>');
                 })

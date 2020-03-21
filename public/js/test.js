@@ -211,7 +211,7 @@ $.fn.jacktree = function (arg) {
             '        <h4 class="modal-title" id="myModalLabel">上传文件</h4>\n' +
             '      </div>';
         html += '<div class="modal-body">\n' +
-            '       <input id="input-703" name="image" type="file" multiple=true class="file-loading">\n' +
+            '       <input id="input-703" name="fileModalImage" type="file" multiple=true class="file-loading">\n' +
             '    </div>';
         html += '<div class="modal-footer">\n' +
             '        <button type="button" class="btn btn-default cancelUploadBtn">取消</button>\n' +
@@ -270,7 +270,7 @@ $.fn.jacktree = function (arg) {
 
             var path = [];
             $.each($('#column-right .fileList  a.selected'), function (i, v) {
-                path.push($(v).find('input[name="image"]').val())
+                path.push($(v).find('input[name="fileModalImage"]').val())
             });
 
             if (path && path.length > 0) {
@@ -365,7 +365,7 @@ $.fn.jacktree = function (arg) {
 
             var path = [];
             $.each($('#column-right .fileList  a.selected'), function (i, v) {
-                path.push($(v).find('input[name="image"]').val())
+                path.push($(v).find('input[name="fileModalImage"]').val())
             });
 
             if (path && path.length > 0) {
@@ -461,7 +461,7 @@ $.fn.jacktree = function (arg) {
 
             var path = [];
             $.each($('#column-right .fileList  a.selected'), function (i, v) {
-                path.push($(v).find('input[name="image"]').val())
+                path.push($(v).find('input[name="fileModalImage"]').val())
             });
 
             if (path && path.length > 1) {
@@ -566,7 +566,7 @@ $.fn.jacktree = function (arg) {
 
             var path = [];
             $.each($('#column-right .fileList  a.selected'), function (i, v) {
-                path.push($(v).find('input[name="image"]').val())
+                path.push($(v).find('input[name="fileModalImage"]').val())
             });
 
             if (path && path.length > 1) {
@@ -639,7 +639,7 @@ $.fn.jacktree = function (arg) {
         $.each($('#column-right .fileList  a.selected'), function (i, v) {
             let data = {
                 "image_uri": $(v).find('img').attr('src'),
-                "image_path": $(v).find('input[name="image"]').val()
+                "image_path": $(v).find('input[name="fileModalImage"]').val()
             };
             result.push(data)
         });
@@ -722,7 +722,7 @@ $.fn.jacktree = function (arg) {
                             '<br />' +
                             '<span>' + jsonObj[i]['filename'] + '</span>' +
                             '<br />' + jsonObj[i]['size'] + '' +
-                            '<input type="hidden" name="image" value="' + jsonObj[i]['file'] + '" />' +
+                            '<input type="hidden" name="fileModalImage" value="' + jsonObj[i]['file'] + '" />' +
                             '</a>';
                     }
                     break;
@@ -735,7 +735,7 @@ $.fn.jacktree = function (arg) {
                     for (i = 0; i < jsonObj.length; i++) {
                         html += '<tr>';
                         html += '<td>' +
-                            '<a>' + jsonObj[i]['filename'] + '<input type="hidden" name="image" value="' + jsonObj[i]['file'] + '" /></a></td><td>' + jsonObj[i]['size'] + '</td><td>' + jsonObj[i]['updTime'] + '</td>';
+                            '<a>' + jsonObj[i]['filename'] + '<input type="hidden" name="fileModalImage" value="' + jsonObj[i]['file'] + '" /></a></td><td>' + jsonObj[i]['size'] + '</td><td>' + jsonObj[i]['updTime'] + '</td>';
                         html += '</tr>';
                     }
                     html += '</table>';

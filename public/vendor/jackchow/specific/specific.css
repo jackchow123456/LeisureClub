@@ -101,6 +101,7 @@
 .sku-galley {
     width: 150px;
     overflow-x: auto;
+    overflow-y: hidden;
 }
 .sku-pictures {
     width: max-content;

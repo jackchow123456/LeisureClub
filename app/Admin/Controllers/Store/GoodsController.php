@@ -2,24 +2,17 @@
 
 namespace App\Admin\Controllers\Store;
 
-use App\Models\Store\GoodsAttr;
-use App\Models\Store\GoodsAttrValue;
-use App\Models\Store\GoodsSku;
-use App\Models\Store\Media;
-use App\Models\Store\MediaCategory;
 use App\User;
 use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
-use Encore\Admin\Show;
 use App\Models\Store\Goods;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class GoodsController extends AdminController
 {
+    public $savePathPrefix = 'upload/admin/';
+
 
     public $store_id = 0;
 
@@ -74,160 +67,17 @@ class GoodsController extends AdminController
                 }
             })->ajax('/admin/api/users')->value(1)->required();
             $form->text('store_id', __('店铺id'))->value(0)->required();
-            $form->multipleImage('medias', __('商品画册、'))->removable()->sortable()->help('可上传多个图片')->options([
-                'browseClass'=>'btn btn-primary btn-block',
-                'showCaption'=>false,
-                'showRemove'=>false,
-                'showUpload'=>false,
-                'layoutTemplates'=>'main1',
+            $form->multipleImage('me', __('商品画册'))->removable()->help('可上传多个图片')->options([
                 'maxFileCount' => 5     //最大上传文件数为5
             ]);
-
-//            $form->image('images', __('商品图'))->removable()->sortable();
-
+            $form->image('image', __('商品图'));
 //            $form->divider('价格库存');
-
 //            $form->sku('sku', '商品规格');
             $form->specific('sku', '商品规格');
         });
-
-        if (!$form->isEditing()) {
-            $form->ignore('sku');
-
-        }
-
-
-        $form->saved(function (Form $form) {
-            DB::connection()->beginTransaction();
-
-            // sku处理
-            $data = \Request::all();
-            dd($data);
-            $sku = json_decode($data['sku'], true);
-            $this->handleSku($sku, $form->model());
-
-            DB::connection()->commit();
-
-        });
-
-
         return $form;
     }
 
-    /**
-     * 处理上传的sku信息
-     *
-     * @param $sku
-     * @param $model
-     */
-    protected function handleSku($sku, $model)
-    {
-        if (empty($sku)) return;
-
-        $attrs = $sku['attrs'];
-        $this->handleSkuAttr($attrs);
-        GoodsSku::where('goods_id', $model->id)->delete();
-
-        $ignoreKey = ['price', 'stock'];
-        $skus = $sku['sku'];
-
-        foreach ($skus as $sk => $item) {
-            $key = $keyName = [];
-            $media = false;
-            foreach ($item as $k => $vitem) {
-                if (in_array($k, $ignoreKey)) continue;
-
-                if (is_array($vitem) && $k == 'pic') {
-                    $media = $this->handleSkuMedia($vitem);
-                    continue;
-                }
-
-                $value = GoodsAttrValue::with(['attr' => function ($j) use ($k) {
-                    $j->where('name', $k);
-                }])->where('name', $vitem)->first();
-
-                $key[] = $value->getKey();
-                $keyName[] = $k . ':' . $vitem;
-            }
-
-            $key_name = implode(',', $keyName);
-            $media_id = $media ? $media->getKey() : 0;
-
-            Log::debug('meida_id:',[$media_id]);
-            Log::debug('price:',[$item['price']]);
-
-            $goodsSku = GoodsSku::create([
-                'goods_id' => $model->id,
-                'key' => implode('_', $key),
-                'key_name' => $key_name,
-                'media_id' => $media_id,
-                'price' => $item['price'],
-                'stock' => $item['stock'],
-            ]);
-
-
-            if ($media_id > 0) MediaCategory::where('id', $media_id)->update(['use_id' => $goodsSku->getKey(), 'name' => $model->name . "【{$key_name}】图片"]);
-        }
-
-    }
-
-    /**
-     * 处理上传规格的属性和属性值
-     *
-     * @param $attrs
-     */
-    protected function handleSkuAttr($attrs)
-    {
-        if (!$attrs) return;
-
-        foreach ($attrs as $attr => $attrValues) {
-            $goods_attr = GoodsAttr::updateOrCreate([
-                'store_id' => $this->store_id,
-                'name' => $attr,
-            ], [
-                'sort' => 0
-            ]);
-
-            foreach ($attrValues as $attrValue) {
-                GoodsAttrValue::updateOrCreate([
-                    'goods_attr_id' => $goods_attr->getKey(),
-                    'store_id' => $this->store_id,
-                    'name' => $attrValue,
-                ], [
-                    'sort' => 0
-                ]);
-            }
-        }
-    }
-
-    /**
-     * 处理规格图片
-     *
-     * @param $skuImages
-     * @return |null
-     */
-    protected function handleSkuMedia($skuImages)
-    {
-        if (!$skuImages) return null;
-
-        $mediaCategory = MediaCategory::create([
-            'name' => '',
-            'store_id' => $this->store_id,
-            'use' => '商品规格',
-            'type' => 'image',
-        ]);
-
-        foreach ($skuImages as $item) {
-            Media::create([
-                'store_id' => $this->store_id,
-                'mc_id' => $mediaCategory->getKey(),
-                'type' => 'image',
-                'path' => $item,
-            ]);
-        }
-
-        return $mediaCategory;
-    }
 
 
 }
