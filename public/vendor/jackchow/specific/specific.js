@@ -234,10 +234,20 @@
 
     Specific.prototype.upload = function (that) {
         let _this = this;
+        var origin = window.location.origin + '/admin/';
         that.jacktree({
+            "DirectoryRoute": origin + 'fileManager/directory',
+            "ListFoldersRoute": origin + 'fileManager/listFolders',
+            "FilesRoute":  origin + 'fileManager/files',
+            "CreateRoute":  origin + 'fileManager/create',
+            "UploadRoute":  origin + 'fileManager/upload',
+            "DeleteRoute":  origin + 'fileManager/delete',
+            "MoveRoute":  origin + 'fileManager/move',
+            "CopyRoute":  origin + 'fileManager/copy',
+            "RenameRoute":  origin + 'fileManager/rename',
+            "FoldersRoute":  origin + 'fileManager/folders',
             "target": '.specific_table',
             "callback": function (result) {
-                console.log(result)
                 $.each(result, function (i, v) {
                     that.parent('li').before('<li data-field-pic="' + v.image_path + '"><img data-original="' + v.image_uri + '" src="' + v.image_uri + '"><a class="remove" href="javascript:;">删除</a></li>');
                 })
