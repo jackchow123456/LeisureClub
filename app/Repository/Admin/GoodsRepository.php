@@ -14,19 +14,26 @@ use App\Models\Store\Media;
 use App\Models\Store\MediaCategory;
 use App\Models\Store\GoodsAttr;
 use App\Models\Store\GoodsAttrValue;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class GoodsRepository
 {
     public $model;
 
-    public function __construct(Goods $model)
+    public function __construct(Goods $model = null)
     {
         $this->model = $model;
     }
 
+    /**
+     * 获取商品sku信息
+     *
+     * @return array|false|string
+     */
     public function getGoodsSkuInfo()
     {
-        $sku = GoodsSku::where('goods_id',$this->model->id)->get();
+        $sku = GoodsSku::where('goods_id', $this->model->id)->get();
         if (!$sku) return [];
 
         $data = [];
@@ -39,7 +46,7 @@ class GoodsRepository
                 $attrName = current($attrInfo);
                 $attrValue = end($attrInfo);
                 !isset($attr[$attrName]) && $attr[$attrName] = [];
-                if(!in_array($attrValue,$attr[$attrName]))  $attr[$attrName][] = $attrValue;
+                if (!in_array($attrValue, $attr[$attrName])) $attr[$attrName][] = $attrValue;
             }
 
             $sku[$sk]['pic'] = $item->mediaCategory ? $item->mediaCategory->medias : '';
@@ -62,13 +69,15 @@ class GoodsRepository
     {
         if (empty($sku)) return;
 
-
         $attrs = $sku['attrs'];
         $this->handleSkuAttr($attrs);
         GoodsSku::where('goods_id', $model->id)->delete();
 
         $ignoreKey = ['price', 'stock'];
         $skus = $sku['sku'];
+        if (!$skus) return;
+
+        Log::debug('skus',[$skus]);
 
         foreach ($skus as $sk => $item) {
             $key = $keyName = [];
@@ -104,7 +113,34 @@ class GoodsRepository
 
             if ($media_id > 0) MediaCategory::where('id', $media_id)->update(['use_id' => $goodsSku->getKey(), 'name' => $model->name . "【{$key_name}】图片"]);
         }
+    }
 
+    /**
+     * 设置商品画册属性
+     *
+     * @param $me
+     * @param $model
+     */
+    public function handleMeAttribute($me, $model)
+    {
+        $mediaCategory = MediaCategory::updateOrCreate([
+            'use' => '商品',
+            'use_id' => $model->id,
+        ], [
+            'name' => $model->name,
+            'store_id' => getStoreId(),
+            'type' => 'image',
+        ]);
+
+        Media::where('mc_id', $mediaCategory->id)->delete();
+        foreach ($me as $path) {
+            Media::create([
+                'store_id' => getStoreId(),
+                'mc_id' => $mediaCategory->getKey(),
+                'type' => 'image',
+                'path' => getSavePath($path),
+            ]);
+        }
     }
 
     /**
@@ -127,7 +163,7 @@ class GoodsRepository
             foreach ($attrValues as $attrValue) {
                 GoodsAttrValue::updateOrCreate([
                     'goods_attr_id' => $goods_attr->getKey(),
-                        'store_id' => getStoreId(),
+                    'store_id' => getStoreId(),
                     'name' => $attrValue,
                 ], [
                     'sort' => 0

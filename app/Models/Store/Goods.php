@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Goods extends Model
 {
-    protected $guarded = [];
+    protected $guarded = ['sku', 'me'];
 
     protected $appends = [
         'sku', 'me'
@@ -37,8 +37,8 @@ class Goods extends Model
      */
     public function setSkuAttribute($key)
     {
-        $sku = json_decode($key, true);
-        (new GoodsRepository($this))->handleSku($sku, $this);
+//        $sku = json_decode($key, true);
+//        (new GoodsRepository($this))->handleSku($sku, $this);
     }
 
     /**
@@ -57,27 +57,27 @@ class Goods extends Model
      *
      * @param $key
      */
-    public function setMeAttribute($key)
-    {
-        $mediaCategory = MediaCategory::updateOrCreate([
-            'use' => '商品',
-            'use_id' => $this->id,
-        ], [
-            'name' => $this->name,
-            'store_id' => getStoreId(),
-            'type' => 'image',
-        ]);
-
-        Media::where('mc_id', $mediaCategory->id)->delete();
-        foreach ($key as $path) {
-            Media::create([
-                'store_id' => getStoreId(),
-                'mc_id' => $mediaCategory->getKey(),
-                'type' => 'image',
-                'path' => getSavePath($path),
-            ]);
-        }
-    }
+//    public function setMeAttribute($key)
+//    {
+//        $mediaCategory = MediaCategory::updateOrCreate([
+//            'use' => '商品',
+//            'use_id' => $this->id,
+//        ], [
+//            'name' => $this->name,
+//            'store_id' => getStoreId(),
+//            'type' => 'image',
+//        ]);
+//
+//        Media::where('mc_id', $mediaCategory->id)->delete();
+//        foreach ($key as $path) {
+//            Media::create([
+//                'store_id' => getStoreId(),
+//                'mc_id' => $mediaCategory->getKey(),
+//                'type' => 'image',
+//                'path' => getSavePath($path),
+//            ]);
+//        }
+//    }
 
     /**
      * 处理商品图片（设置）
@@ -85,7 +85,7 @@ class Goods extends Model
      */
     public function setImageAttribute($key)
     {
-        $this->attributes['image'] = getSavePath($key);
+        $key ? $this->attributes['image'] = getSavePath($key) : $this->attributes['image'] = '';
     }
 
     /**

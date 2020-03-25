@@ -8,6 +8,7 @@ use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use App\Models\Store\Goods;
 use Illuminate\Support\Str;
+use App\Repository\Admin\GoodsRepository;
 
 class GoodsController extends AdminController
 {
@@ -70,14 +71,25 @@ class GoodsController extends AdminController
             $form->multipleImage('me', __('商品画册'))->removable()->help('可上传多个图片')->options([
                 'maxFileCount' => 5     //最大上传文件数为5
             ]);
-            $form->image('image', __('商品图'));
+            $form->image('image', __('商品图'))->removable();
 //            $form->divider('价格库存');
 //            $form->sku('sku', '商品规格');
             $form->specific('sku', '商品规格');
         });
+
+        !$form->isEditing() && $form->ignore(['me', 'sku']);
+
+        $form->saved(function (Form $form) {
+            $data = \Request::all();
+
+            $goodsRepository = new GoodsRepository();
+            isset($data['me']) && $goodsRepository->handleMeAttribute($form->builder()->field('me')->prepare($data['me']), $form->model());
+            isset($data['sku']) && $goodsRepository->handleSku(json_decode(data_get($data, 'sku','{}'), true), $form->model());
+
+        });
+
         return $form;
     }
-
 
 
 }
