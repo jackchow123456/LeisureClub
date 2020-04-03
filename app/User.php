@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\Store\UserAddress;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -57,5 +58,10 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail, CanRe
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function address()
+    {
+        return $this->hasMany(UserAddress::class,'user_id')->orderBy('is_default');
     }
 }

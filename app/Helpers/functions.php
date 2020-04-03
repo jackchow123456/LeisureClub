@@ -33,3 +33,21 @@ function getSavePath($path)
     $path = str_replace('upload/admin/', '', $path);
     return 'upload/admin/' . $path;
 }
+
+function getDefaultShowImage()
+{
+    return url('');
+}
+
+/**
+ * 仓库类返回格式
+ *
+ * @param string $message
+ * @param bool $success
+ * @param array $data
+ * @return array
+ */
+function returnMessage($message = "成功", $success = false, $data = [])
+{
+    return ['msg' => $message, 'success' => $success, 'data' => $data];
+}

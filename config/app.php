@@ -233,7 +233,8 @@ return [
 
         'Sms\SmsRepository' => App\Facades\Sms\SmsRepository::class,
 
-
+        'Store\CartRepository' => App\Facades\Store\CartRepository::class,
+        'Store\OrderRepository' => App\Facades\Store\OrderRepository::class
     ],
 
 ];

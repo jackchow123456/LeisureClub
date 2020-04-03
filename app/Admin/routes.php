@@ -44,6 +44,7 @@ Route::group([
 
         // 商品管理
         $router->resources(['goods' => GoodsController::class]);
+        $router->resources(['ad' => AdController::class]);
     });
 
 

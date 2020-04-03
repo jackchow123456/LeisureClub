@@ -10,13 +10,26 @@ class Goods extends Model
     protected $guarded = ['sku', 'me'];
 
     protected $appends = [
-        'sku', 'me'
+        'sku', 'me', 'image_uri'
     ];
 
-    public function __construct(array $attributes = [])
+    public function __construct(array $attributes = [], $is_appends = true)
     {
         $this->setTable(config('store.database.table_prefix') . 'goods');
         parent::__construct($attributes);
+        if ($is_appends === false) {
+            $this->appends = [];
+        }
+    }
+
+    /**
+     * 图片uri字段处理
+     *
+     * @return \Illuminate\Contracts\Routing\UrlGenerator|string
+     */
+    public function getImageUriAttribute()
+    {
+        return $this->attributes['image'] ? url($this->attributes['image']) : '';
     }
 
     /**
@@ -127,5 +140,15 @@ class Goods extends Model
     public function stock()
     {
         return $this->hasMany(GoodsSkuStock::class, 'goods_id');
+    }
+
+    /**
+     * 检查是否含有规格商品
+     *
+     * @return bool
+     */
+    public function checkHasSpecGoods()
+    {
+        return !$this->skus()->get()->isEmpty();
     }
 }

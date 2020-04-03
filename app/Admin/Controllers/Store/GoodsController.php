@@ -60,7 +60,7 @@ class GoodsController extends AdminController
             $form->divider('基本信息');
 
             $form->text('name', __('商品名称'))->value(Str::random(10))->required();
-            $form->textarea('description', __('分享描述'))->value('12312312312')->rows(3)->required();
+            $form->textarea('short_description', __('分享描述'))->value('12312312312')->rows(3)->required();
             $form->select('user_id', __('设置管理员'))->options(function ($id) {
                 $user = User::find($id);
                 if ($user) {
@@ -72,9 +72,16 @@ class GoodsController extends AdminController
                 'maxFileCount' => 5     //最大上传文件数为5
             ]);
             $form->image('image', __('商品图'))->removable();
+            $form->dateRange('start_date', 'end_date', __('上架时间'));
 //            $form->divider('价格库存');
 //            $form->sku('sku', '商品规格');
+            $form->currency('price','价格')->symbol('￥');
+            $form->number('stock_num','库存');
             $form->specific('sku', '商品规格');
+
+            $form->UEditor('content', __('内容'));
+
+
         });
 
         !$form->isEditing() && $form->ignore(['me', 'sku']);
