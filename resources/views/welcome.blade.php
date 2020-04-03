@@ -1,103 +1,72 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<!DOCTYPE html><html lang=en><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><title>Laravel</title><style>html{height:100%;}
+        body{min-height:100%;margin:0;padding:0;position:relative;}
 
-    <title>Laravel</title>
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
-
-    <!-- Styles -->
-    <style>
-        html, body {
-            background-color: #fff;
-            color: #636b6f;
-            font-family: 'Nunito', sans-serif;
-            font-weight: 200;
-            height: 100vh;
-            margin: 0;
+        .el-header{background-color: #ffe4c4;}
+        .el-main{padding-bottom:100px;background-color: #bdb76b;}/* main的padding-bottom值要等于或大于footer的height值 */
+        .el-footer{position:absolute;bottom:0;width:100%;height:100px;background-color: #ffc0cb;}</style><link href=/css/app.a7ee63f7.css rel=preload as=style><link href=/css/chunk-vendors.728eb7d9.css rel=preload as=style><link href=/js/app.8061d0cf.js rel=preload as=script><link href=/js/chunk-vendors.981a8ec8.js rel=preload as=script><link href=/css/chunk-vendors.728eb7d9.css rel=stylesheet><link href=/css/app.a7ee63f7.css rel=stylesheet></head><body><noscript><strong>We're sorry but vue1 doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id=app></div><script src=/js/chunk-vendors.981a8ec8.js></script><script src=/js/app.8061d0cf.js></script></body><script>// 点击出现随机爱心
+    (function (window, document, undefined) {
+        var hearts = [];
+        window.requestAnimationFrame = (function () {
+            return window.requestAnimationFrame ||
+                window.webkitRequestAnimationFrame ||
+                window.mozRequestAnimationFrame ||
+                window.oRequestAnimationFrame ||
+                window.msRequestAnimationFrame ||
+                function (callback) {
+                    setTimeout(callback, 1000 / 60);
+                }
+        })();
+        init();
+        function init() {
+            css(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+            attachEvent();
+            gameloop();
         }
-
-        .full-height {
-            height: 95vh;
+        function gameloop() {
+            for (var i = 0; i < hearts.length; i++) {
+                if (hearts[i].alpha <= 0) {
+                    document.body.removeChild(hearts[i].el);
+                    hearts.splice(i, 1);
+                    continue;
+                }
+                hearts[i].y--;
+                hearts[i].scale += 0.004;
+                hearts[i].alpha -= 0.013;
+                hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+            }
+            requestAnimationFrame(gameloop);
         }
-
-        .flex-center {
-            align-items: center;
-            display: flex;
-            justify-content: center;
+        function attachEvent() {
+            var old = typeof window.οnclick === "function" && window.onclick;
+            window.onclick = function (event) {
+                old && old();
+                createHeart(event);
+            }
         }
-
-        .position-ref {
-            position: relative;
+        function createHeart(event) {
+            var d = document.createElement("div");
+            d.className = "heart";
+            hearts.push({
+                el: d,
+                x: event.clientX - 5,
+                y: event.clientY - 5,
+                scale: 1,
+                alpha: 1,
+                color: randomColor()
+            });
+            document.body.appendChild(d);
         }
-
-        .top-right {
-            position: absolute;
-            right: 10px;
-            top: 18px;
+        function css(css) {
+            var style = document.createElement("style");
+            style.type = "text/css";
+            try {
+                style.appendChild(document.createTextNode(css));
+            } catch (ex) {
+                style.styleSheet.cssText = css;
+            }
+            document.getElementsByTagName('head')[0].appendChild(style);
         }
-
-        .content {
-            text-align: center;
+        function randomColor() {
+            return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
         }
-
-        .title {
-            font-size: 84px;
-        }
-
-        .links > a {
-            color: #636b6f;
-            padding: 0 25px;
-            font-size: 13px;
-            font-weight: 600;
-            letter-spacing: .1rem;
-            text-decoration: none;
-            text-transform: uppercase;
-        }
-
-        .m-b-md {
-            margin-bottom: 30px;
-        }
-    </style>
-</head>
-<body>
-<div class="flex-center position-ref full-height">
-    @if (Route::has('login'))
-        <div class="top-right links">
-            @auth
-                <a href="{{ url('/home') }}">Home</a>
-            @else
-                <a href="{{ route('login') }}">Login</a>
-
-                @if (Route::has('register'))
-                    <a href="{{ route('register') }}">Register</a>
-                @endif
-            @endauth
-        </div>
-    @endif
-
-    <div class="content">
-        <div class="title m-b-md">
-            Laravel
-        </div>
-
-        <div class="links">
-            <a href="https://laravel.com/docs">Docs</a>
-            <a href="https://laracasts.com">Laracasts</a>
-            <a href="https://laravel-news.com">News</a>
-            <a href="https://blog.laravel.com">Blog</a>
-            <a href="https://nova.laravel.com">Nova</a>
-            <a href="https://forge.laravel.com">Forge</a>
-            <a href="https://vapor.laravel.com">Vapor</a>
-            <a href="https://github.com/laravel/laravel">GitHub</a>
-        </div>
-
-    </div>
-</div>
-<div class="footer" style="text-align: center"><strong><a href="http://www.beian.miit.gov.cn" target="_blank">粤ICP备19142756号-1</a></strong></div>
-
-</body>
-</html>
+    })(window, document);</script></html>
